@@ -137,14 +137,12 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+// Enable Swagger in all environments
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "CubeEnergy API v1");
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "CubeEnergy API v1");
+});
 
 // Use CORS
 app.UseCors("AllowAllOrigins");
