@@ -112,3 +112,4 @@ C:\Users\Emi\source\repos\CubeEnergy\CubeEnergy\obj\Debug\net8.0\refint\CubeEner
 C:\Users\Emi\source\repos\CubeEnergy\CubeEnergy\obj\Debug\net8.0\CubeEnergy.pdb
 C:\Users\Emi\source\repos\CubeEnergy\CubeEnergy\obj\Debug\net8.0\CubeEnergy.genruntimeconfig.cache
 C:\Users\Emi\source\repos\CubeEnergy\CubeEnergy\obj\Debug\net8.0\ref\CubeEnergy.dll
+C:\Users\Emi\source\repos\CubeEnergy\CubeEnergy\obj\Debug\net8.0\CubeEnergy.sourcelink.json

@@ -26,5 +26,8 @@ WORKDIR /app
 # Copy the published output from the build image
 COPY --from=build /app/out .
 
+# Expose port 80
+EXPOSE 80
+
 # Set the entry point
 ENTRYPOINT ["dotnet", "CubeEnergy.dll"]
