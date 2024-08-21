@@ -156,14 +156,14 @@ namespace CubeEnergy.Controllers
             return Ok(new { Message = "Units Shared Successfully" });
         }
 
-        [HttpGet("calculate-total-cost")]
+        [HttpGet("calculateTotalCost")]
         public async Task<IActionResult> CalculateTotalCost(string email)
         {
             var totalCostDto = await _userService.CalculateTotalCostAsync(email);
             return Ok(totalCostDto);
         }
 
-        [HttpGet("show-usage-limit-by-month")]
+        [HttpGet("showUsageLimitByMonth")]
         public async Task<IActionResult> ShowUsageLimitByMonth(string email, DateTime startDate, DateTime endDate)
         {
             var usageLimits = await _userService.GetUsageLimitsByMonthAsync(email, startDate, endDate);
