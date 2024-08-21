@@ -3,7 +3,7 @@ using CubeEnergy.Repositories;
 using System;
 using System.Threading.Tasks;
 
-namespace CubeEnergy.Repositories
+namespace CubeEnergy.Services
 {
     public class InverterService : IInverterService
     {

@@ -24,6 +24,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IKycRepository, KycRepository>();
 builder.Services.AddScoped<KycService>();
+builder.Services.AddScoped<IInverterService, InverterService>();
+
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AuthService>(); // Add this line
 
