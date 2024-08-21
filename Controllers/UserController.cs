@@ -4,6 +4,7 @@ using CubeEnergy.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace CubeEnergy.Controllers
 {
@@ -59,7 +60,6 @@ namespace CubeEnergy.Controllers
             return NotFound();
         }
 
-
         [HttpPost("enterUnitPrice")]
         public async Task<IActionResult> EnterUnitPrice(UnitPriceDTO priceDto)
         {
@@ -95,7 +95,6 @@ namespace CubeEnergy.Controllers
 
             return BadRequest("Unit price not found.");
         }
-
 
         [HttpPut("update-balance")]
         public async Task<IActionResult> UpdateBalance([FromQuery] string email, [FromQuery] decimal amount)
@@ -143,5 +142,33 @@ namespace CubeEnergy.Controllers
 
             return Ok("Bills usage calculated and balance updated.");
         }
+
+        [HttpPost("share-units")]
+        public async Task<IActionResult> ShareUnits([FromBody] ShareUnitsDTO dto)
+        {
+            var result = await _userService.ShareUnitsAsync(dto.OriginAccountId, dto.DestinationAccountId, dto.Amount);
+
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.ErrorMessage });
+            }
+
+            return Ok(new { Message = "Units Shared Successfully" });
+        }
+
+        [HttpGet("calculate-total-cost")]
+        public async Task<IActionResult> CalculateTotalCost(string email)
+        {
+            var totalCostDto = await _userService.CalculateTotalCostAsync(email);
+            return Ok(totalCostDto);
+        }
+
+        [HttpGet("show-usage-limit-by-month")]
+        public async Task<IActionResult> ShowUsageLimitByMonth(string email, DateTime startDate, DateTime endDate)
+        {
+            var usageLimits = await _userService.GetUsageLimitsByMonthAsync(email, startDate, endDate);
+            return Ok(usageLimits);
+        }
+
     }
 }

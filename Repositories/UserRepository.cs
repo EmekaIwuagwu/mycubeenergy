@@ -1,6 +1,11 @@
 ﻿using CubeEnergy.Data;
+using CubeEnergy.DTOs;
 using CubeEnergy.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CubeEnergy.Repositories
 {
@@ -72,5 +77,66 @@ namespace CubeEnergy.Repositories
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         }
 
+        public async Task<User> GetUserByAccountIdAsync(string accountId)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.AccountId == accountId);
+        }
+
+        public async Task<bool> ShareUnitsAsync(string originAccountId, string destinationAccountId, decimal amount)
+        {
+            var originUser = await GetUserByAccountIdAsync(originAccountId);
+            var destinationUser = await GetUserByAccountIdAsync(destinationAccountId);
+
+            if (originUser == null || destinationUser == null || originUser.UnitBalance < amount)
+                return false;
+
+            originUser.UnitBalance -= amount;
+            destinationUser.UnitBalance += amount;
+
+            _context.Users.Update(originUser);
+            _context.Users.Update(destinationUser);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<decimal> CalculateTotalCostAsync(string email)
+        {
+            var totalCost = await _context.Limits
+                .Where(l => l.Email == email)
+                .SumAsync(l => l.DailyTotalCost);
+
+            return totalCost;
+        }
+
+        public async Task<IEnumerable<UsageLimitDTO>> GetUsageLimitsByMonthAsync(string email, DateTime startDate, DateTime endDate)
+        {
+            var dailyLimits = await _context.DailyLimits
+                .Where(dl => dl.Email == email && dl.Date >= startDate && dl.Date <= endDate)
+                .ToListAsync();
+
+            return dailyLimits.Select(dl => new UsageLimitDTO
+            {
+                Date = dl.Date,
+                DailyLimit = dl.DailyTotalCost
+            });
+        }
+
+        public async Task SaveDailyLimitsAsync(DailyLimit dailyLimit)
+        {
+            _context.DailyLimits.Add(dailyLimit);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> GetTotalCostCountAsync(string email)
+        {
+            return await _context.Limits.CountAsync(l => l.Email == email);
+        }
+
+        public async Task SaveDailyLimitAsync(DailyLimit dailyLimit)
+        {
+            _context.DailyLimits.Add(dailyLimit);
+            await _context.SaveChangesAsync();
+        }
     }
 }

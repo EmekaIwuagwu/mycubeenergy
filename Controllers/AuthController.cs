@@ -22,10 +22,11 @@ namespace CubeEnergy.Controllers
         {
             var user = new User
             {
-                Username = registerDto.Email,
+                Username = registerDto.Username,
                 Password = registerDto.Password,
                 FirstName = registerDto.FirstName,
                 LastName = registerDto.LastName,
+                Country = registerDto.Country,
                 Address = registerDto.Address,
                 Telephone = registerDto.Telephone,
                 Email = registerDto.Email,
@@ -37,6 +38,8 @@ namespace CubeEnergy.Controllers
             var createdUser = await _authService.RegisterUserAsync(user);
             return Ok(new { Message = "User Created Successfully", User = createdUser });
         }
+
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginUserDTO loginDto)

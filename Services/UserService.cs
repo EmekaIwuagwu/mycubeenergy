@@ -1,5 +1,9 @@
-﻿using CubeEnergy.Models;
+﻿using CubeEnergy.DTOs;
+using CubeEnergy.Models;
 using CubeEnergy.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CubeEnergy.Services
 {
@@ -55,7 +59,6 @@ namespace CubeEnergy.Services
             return await _userRepository.GetTransactionsByDateAsync(email, from, to);
         }
 
-        // Add GetUnitPriceAsync method
         public async Task<UnitPrice> GetUnitPriceAsync(int id)
         {
             return await _userRepository.GetUnitPriceAsync(id);
@@ -110,6 +113,42 @@ namespace CubeEnergy.Services
                 await _userRepository.UpdateUserAsync(user);
                 await _transactionRepository.AddTransactionAsync(transaction);
             }
+        }
+
+        public async Task<TotalCostDTO> CalculateTotalCostAsync(string email)
+        {
+            var totalCost = await _userRepository.CalculateTotalCostAsync(email);
+            var count = await _userRepository.GetTotalCostCountAsync(email);
+
+            return new TotalCostDTO
+            {
+                Email = email,
+                Count = count,
+                TotalCost = totalCost
+            };
+        }
+
+        public async Task<IEnumerable<UsageLimitDTO>> GetUsageLimitsByMonthAsync(string email, DateTime startDate, DateTime endDate)
+        {
+            return await _userRepository.GetUsageLimitsByMonthAsync(email, startDate, endDate);
+        }
+
+        public async Task<Result> ShareUnitsAsync(string originAccountId, string destinationAccountId, decimal amount)
+        {
+            var result = new Result();
+            var success = await _userRepository.ShareUnitsAsync(originAccountId, destinationAccountId, amount);
+
+            if (success)
+            {
+                result.Success = true;
+            }
+            else
+            {
+                result.Success = false;
+                result.ErrorMessage = "Failed to share units. Please check account details or balance.";
+            }
+
+            return result;
         }
     }
 }

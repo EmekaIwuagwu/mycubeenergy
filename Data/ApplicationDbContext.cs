@@ -12,5 +12,7 @@ namespace CubeEnergy.Data
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<UnitPrice> UnitPrices { get; set; }
         public DbSet<Kyc> Kycs { get; set; }
+        public DbSet<Limit> Limits { get; set; }
+        public DbSet<DailyLimit> DailyLimits { get; set; }
     }
 }
