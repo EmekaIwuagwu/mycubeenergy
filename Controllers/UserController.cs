@@ -60,7 +60,7 @@ namespace CubeEnergy.Controllers
             return NotFound();
         }
 
-        [HttpPost("enterUnitPrice")]
+        /*[HttpPost("enterUnitPrice")]
         public async Task<IActionResult> EnterUnitPrice(UnitPriceDTO priceDto)
         {
             var price = new UnitPrice { Price = priceDto.Price };
@@ -82,6 +82,7 @@ namespace CubeEnergy.Controllers
             await _userService.DeleteUnitPriceAsync(id);
             return Ok("Price deleted successfully.");
         }
+        */
 
         [HttpGet("calculateUnits")]
         public async Task<IActionResult> CalculateUnits(int id, int days)
@@ -129,7 +130,7 @@ namespace CubeEnergy.Controllers
             return Ok(transactions);
         }
 
-        [HttpPost("calculate-bills")]
+        /*[HttpPost("calculate-bills")]
         public async Task<IActionResult> CalculateBills([FromQuery] string email, [FromQuery] double hours)
         {
             if (hours <= 0)
@@ -142,6 +143,7 @@ namespace CubeEnergy.Controllers
 
             return Ok("Bills usage calculated and balance updated.");
         }
+        */
 
         [HttpPost("share-units")]
         public async Task<IActionResult> ShareUnits([FromBody] ShareUnitsDTO dto)
