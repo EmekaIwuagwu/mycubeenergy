@@ -6252,11 +6252,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Emi\\source\\repos\\CubeEnergy\\CubeEnergy\\CubeEnergy.csproj",
+      "projectUniqueName": "C:\\Users\\Emi\\source\\repos\\mycubeenergy\\CubeEnergy.csproj",
       "projectName": "CubeEnergy",
-      "projectPath": "C:\\Users\\Emi\\source\\repos\\CubeEnergy\\CubeEnergy\\CubeEnergy.csproj",
+      "projectPath": "C:\\Users\\Emi\\source\\repos\\mycubeenergy\\CubeEnergy.csproj",
       "packagesPath": "C:\\Users\\Emi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Emi\\source\\repos\\CubeEnergy\\CubeEnergy\\obj\\",
+      "outputPath": "C:\\Users\\Emi\\source\\repos\\mycubeenergy\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Emi\\AppData\\Roaming\\NuGet\\NuGet.Config",

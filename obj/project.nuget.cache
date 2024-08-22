@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "IOHeikNvj78=",
+  "dgSpecHash": "YaKdT7gEnGI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Emi\\source\\repos\\CubeEnergy\\CubeEnergy\\CubeEnergy.csproj",
+  "projectFilePath": "C:\\Users\\Emi\\source\\repos\\mycubeenergy\\CubeEnergy.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Emi\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Emi\\.nuget\\packages\\cloudinarydotnet\\1.26.2\\cloudinarydotnet.1.26.2.nupkg.sha512",

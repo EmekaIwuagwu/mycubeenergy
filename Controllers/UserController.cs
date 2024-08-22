@@ -159,8 +159,15 @@ namespace CubeEnergy.Controllers
         [HttpGet("calculateTotalCost")]
         public async Task<IActionResult> CalculateTotalCost(string email)
         {
-            var totalCostDto = await _userService.CalculateTotalCostAsync(email);
-            return Ok(totalCostDto);
+            try
+            {
+                var totalCost = await _userService.CalculateTotalCostAsync(email);
+                return Ok(new { Email = email, TotalCost = totalCost });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
 
         [HttpGet("showUsageLimitByMonth")]

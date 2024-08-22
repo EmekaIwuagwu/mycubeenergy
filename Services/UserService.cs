@@ -115,7 +115,7 @@ namespace CubeEnergy.Services
             }
         }
 
-        public async Task<TotalCostDTO> CalculateTotalCostAsync(string email)
+        /*public async Task<TotalCostDTO> CalculateTotalCostAsync(string email)
         {
             var totalCost = await _userRepository.CalculateTotalCostAsync(email);
             var count = await _userRepository.GetTotalCostCountAsync(email);
@@ -126,6 +126,12 @@ namespace CubeEnergy.Services
                 Count = count,
                 TotalCost = totalCost
             };
+        }
+        */
+
+        public async Task<decimal> CalculateTotalCostAsync(string email)
+        {
+            return await _userRepository.CalculateTotalCostAsync(email);
         }
 
         public async Task<IEnumerable<UsageLimitDTO>> GetUsageLimitsByMonthAsync(string email, DateTime startDate, DateTime endDate)

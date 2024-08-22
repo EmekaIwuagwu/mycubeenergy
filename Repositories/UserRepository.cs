@@ -102,9 +102,9 @@ namespace CubeEnergy.Repositories
 
         public async Task<decimal> CalculateTotalCostAsync(string email)
         {
-            var totalCost = await _context.Limits
-                .Where(l => l.Email == email)
-                .SumAsync(l => l.DailyTotalCost);
+            var totalCost = await _context.DailyLimits
+                .Where(dl => dl.Email == email)
+                .SumAsync(dl => dl.DailyTotalCost);
 
             return totalCost;
         }
