@@ -19,16 +19,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     )
 );
 
+// Register repositories
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IKycRepository, KycRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>(); // Register the Admin repository
+
+// Register services
 builder.Services.AddScoped<KycService>();
 builder.Services.AddScoped<IInverterService, InverterService>();
-
+builder.Services.AddScoped<IAdminService, AdminService>(); // Register the Admin service
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<AuthService>(); // Add this line
+builder.Services.AddScoped<AuthService>();
 
+// Register utilities and other services
 builder.Services.AddSingleton<EmailService>();
 
 builder.Services.AddSingleton<JwtService>(provider =>
@@ -65,7 +70,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "MyCubeEnergy API",
+        Title = "CubeEnergy API",
         Version = "v1",
         Description = "API for CubeEnergy including KYC, Authentication, and more.",
         Contact = new OpenApiContact
