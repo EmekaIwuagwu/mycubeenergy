@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CubeEnergy.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/User/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CubeEnergy.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/User/[controller]")]
     [ApiController]
     [Authorize]
     public class KycController : ControllerBase
