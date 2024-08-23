@@ -173,11 +173,54 @@ namespace CubeEnergy.Services
             }
         }
 
-        public async Task ReturnPaymentAsync(string accountId, decimal amount)
+        public async Task ReturnPaymentAsync(string debitAccountId, string creditAccountId, decimal amount)
         {
-            // Implement logic for returning payment to the accountId
-            // This could involve adding a record to a transactions table or updating the user's balance
+            // Find the debit user by debitAccountId
+            var debitUser = await _context.Users.FirstOrDefaultAsync(u => u.AccountId == debitAccountId);
+            if (debitUser == null)
+            {
+                throw new Exception("Debit user not found");
+            }
+
+            // Find the credit user by creditAccountId
+            var creditUser = await _context.Users.FirstOrDefaultAsync(u => u.AccountId == creditAccountId);
+            if (creditUser == null)
+            {
+                throw new Exception("Credit user not found");
+            }
+
+            // Debit the user's balance
+            debitUser.UnitBalance -= amount; // Assuming UnitBalance is the balance field
+
+            // Credit the other user's balance
+            creditUser.UnitBalance += amount; // Assuming UnitBalance is the balance field
+
+            // Create debit transaction entry
+            var debitTransaction = new Transaction
+            {
+                AccountId = debitAccountId,
+                Amount = -amount, // Negative amount for debit
+                TransactionType = "Debit",
+                TransactionDate = DateTime.UtcNow
+            };
+
+            // Create credit transaction entry
+            var creditTransaction = new Transaction
+            {
+                AccountId = creditAccountId,
+                Amount = amount, // Positive amount for credit
+                TransactionType = "Credit",
+                TransactionDate = DateTime.UtcNow
+            };
+
+            // Add transactions to the Transactions table
+            _context.Transactions.Add(debitTransaction);
+            _context.Transactions.Add(creditTransaction);
+
+            // Save changes to the database
+            await _context.SaveChangesAsync();
         }
+
 
         private string HashPassword(string password)
         {

@@ -80,5 +80,61 @@ namespace CubeEnergy.Repositories
                 .Where(t => t.Email == emailOrAccountId || t.AccountId == emailOrAccountId)
                 .ToListAsync();
         }
+
+        public async Task ReturnPaymentAsync(string debitAccountId, string creditAccountId, decimal amount)
+        {
+            // Find the user to be debited by accountId
+            var debitUser = await _context.Users.FirstOrDefaultAsync(u => u.AccountId == debitAccountId);
+            if (debitUser == null)
+            {
+                throw new Exception("Debit User not found");
+            }
+
+            // Find the user to be credited by accountId
+            var creditUser = await _context.Users.FirstOrDefaultAsync(u => u.AccountId == creditAccountId);
+            if (creditUser == null)
+            {
+                throw new Exception("Credit User not found");
+            }
+
+            // Ensure the debit user has sufficient balance
+            if (debitUser.UnitBalance < amount)
+            {
+                throw new Exception("Insufficient balance for debit");
+            }
+
+            // Adjust balances
+            debitUser.UnitBalance -= amount;
+            creditUser.UnitBalance += amount;
+
+            // Create a transaction entry for the debit
+            var debitTransaction = new Transaction
+            {
+                AccountId = debitAccountId,
+                Amount = -amount, // Negative amount for debit
+                TransactionType = "Debit",
+                TransactionDate = DateTime.UtcNow,
+                Description = $"Refund to {creditAccountId}"
+            };
+
+            // Create a transaction entry for the credit
+            var creditTransaction = new Transaction
+            {
+                AccountId = creditAccountId,
+                Amount = amount, // Positive amount for credit
+                TransactionType = "Credit",
+                TransactionDate = DateTime.UtcNow,
+                Description = $"Refund from {debitAccountId}"
+            };
+
+            // Add transactions to the Transactions table
+            _context.Transactions.Add(debitTransaction);
+            _context.Transactions.Add(creditTransaction);
+
+            // Save changes to the database
+            await _context.SaveChangesAsync();
+        }
+
+
     }
 }

@@ -135,7 +135,10 @@ namespace CubeEnergy.Controllers
         [HttpPost("return-payment")]
         public async Task<IActionResult> ReturnPayment(ReturnPaymentDTO returnPaymentDto)
         {
-            await _adminService.ReturnPaymentAsync(returnPaymentDto.AccountId, returnPaymentDto.Amount);
+            // Call the service to perform the return payment operation
+            await _adminService.ReturnPaymentAsync(returnPaymentDto.DebitAccountId, returnPaymentDto.CreditAccountId, returnPaymentDto.Amount);
+
+            // Return a success response
             return Ok(new { Message = "Payment returned successfully" });
         }
     }

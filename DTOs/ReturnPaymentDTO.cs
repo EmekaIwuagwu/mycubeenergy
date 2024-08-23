@@ -2,8 +2,10 @@
 {
     public class ReturnPaymentDTO
     {
-        public string AccountId { get; set; }
+        public string DebitAccountId { get; set; }
+        public string CreditAccountId { get; set; }
         public decimal Amount { get; set; }
     }
+
 
 }
