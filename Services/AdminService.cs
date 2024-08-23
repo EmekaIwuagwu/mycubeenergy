@@ -201,7 +201,8 @@ namespace CubeEnergy.Services
                 AccountId = debitAccountId,
                 Amount = -amount, // Negative amount for debit
                 TransactionType = "Debit",
-                TransactionDate = DateTime.UtcNow
+                TransactionDate = DateTime.UtcNow,
+                Description = "Refund processed"
             };
 
             // Create credit transaction entry
@@ -210,7 +211,8 @@ namespace CubeEnergy.Services
                 AccountId = creditAccountId,
                 Amount = amount, // Positive amount for credit
                 TransactionType = "Credit",
-                TransactionDate = DateTime.UtcNow
+                TransactionDate = DateTime.UtcNow,
+                Description = "Refund received"
             };
 
             // Add transactions to the Transactions table
