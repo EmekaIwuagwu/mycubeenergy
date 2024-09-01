@@ -95,7 +95,7 @@ namespace CubeEnergy.Services
             }
         }
 
-        public async Task UpdateBalanceAndLogTransactionAsync(string email, decimal amount, string accountId)
+        public async Task UpdateBalanceAndLogTransactionAsync(string email, decimal amount, string accountId, string transactionType)
         {
             var user = await _userRepository.GetUserByEmailAsync(email);
             if (user != null)
@@ -107,6 +107,7 @@ namespace CubeEnergy.Services
                     Email = email,
                     Amount = amount,
                     AccountId = accountId,
+                    TransactionType = transactionType,
                     TransactionDate = DateTime.Now,
                     Description = "Payment received and balance updated"
                 };
