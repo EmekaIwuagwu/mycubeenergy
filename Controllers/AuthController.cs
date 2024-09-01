@@ -24,12 +24,10 @@ namespace CubeEnergy.Controllers
             {
                 Username = registerDto.Username,
                 Password = registerDto.Password,
-                FirstName = registerDto.FirstName,
-                LastName = registerDto.LastName,
+                Fullname = registerDto.FullName,
                 Country = registerDto.Country,
                 Address = registerDto.Address,
                 Telephone = registerDto.Telephone,
-                Email = registerDto.Email,
                 City = registerDto.City,
                 State = registerDto.State,
                 Zipcode = registerDto.Zipcode

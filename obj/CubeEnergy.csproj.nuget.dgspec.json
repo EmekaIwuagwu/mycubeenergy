@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Emi\\source\\repos\\mycubeenergy\\CubeEnergy.csproj": {}
+    "C:\\Users\\HP\\Desktop\\Major_files\\mycubeenergy\\CubeEnergy.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Emi\\source\\repos\\mycubeenergy\\CubeEnergy.csproj": {
+    "C:\\Users\\HP\\Desktop\\Major_files\\mycubeenergy\\CubeEnergy.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Emi\\source\\repos\\mycubeenergy\\CubeEnergy.csproj",
+        "projectUniqueName": "C:\\Users\\HP\\Desktop\\Major_files\\mycubeenergy\\CubeEnergy.csproj",
         "projectName": "CubeEnergy",
-        "projectPath": "C:\\Users\\Emi\\source\\repos\\mycubeenergy\\CubeEnergy.csproj",
-        "packagesPath": "C:\\Users\\Emi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Emi\\source\\repos\\mycubeenergy\\obj\\",
+        "projectPath": "C:\\Users\\HP\\Desktop\\Major_files\\mycubeenergy\\CubeEnergy.csproj",
+        "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\HP\\Desktop\\Major_files\\mycubeenergy\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Emi\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -106,7 +106,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

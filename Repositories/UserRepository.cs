@@ -74,7 +74,7 @@ namespace CubeEnergy.Repositories
 
         public async Task<User> GetUserByEmailAsync(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == email);
         }
 
         public async Task<User> GetUserByAccountIdAsync(string accountId)

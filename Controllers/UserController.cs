@@ -45,8 +45,7 @@ namespace CubeEnergy.Controllers
             var user = await _userService.GetUserByEmailOrIdAsync(email, userId);
             if (user != null)
             {
-                user.FirstName = updateDto.FirstName;
-                user.LastName = updateDto.LastName;
+                user.Fullname = updateDto.Fullname;
                 user.Address = updateDto.Address;
                 user.Telephone = updateDto.Telephone;
                 user.City = updateDto.City;

@@ -73,11 +73,9 @@ namespace CubeEnergy.Services
                 return new Result { Success = false, ErrorMessage = "User not found" };
             }
 
-            user.FirstName = updateUserDto.FirstName;
-            user.LastName = updateUserDto.LastName;
+            user.Fullname = updateUserDto.Fullname;
             user.Address = updateUserDto.Address;
             user.Telephone = updateUserDto.Telephone;
-            user.Email = updateUserDto.Email;
             user.City = updateUserDto.City;
             user.State = updateUserDto.State;
             user.Zipcode = updateUserDto.Zipcode;
