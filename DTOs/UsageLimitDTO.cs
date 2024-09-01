@@ -2,7 +2,8 @@
 {
     public class UsageLimitDTO
     {
-        public DateTime Date { get; set; }
-        public decimal DailyLimit { get; set; }
+        public string Month { get; set; }
+        public decimal TotalUsage { get; set; }
     }
+
 }

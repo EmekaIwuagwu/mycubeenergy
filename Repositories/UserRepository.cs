@@ -115,11 +115,45 @@ namespace CubeEnergy.Repositories
                 .Where(dl => dl.Email == email && dl.Date >= startDate && dl.Date <= endDate)
                 .ToListAsync();
 
-            return dailyLimits.Select(dl => new UsageLimitDTO
+            var usageLimits = dailyLimits
+                .GroupBy(dl => new { dl.Date.Year, dl.Date.Month })
+                .Select(g => new UsageLimitDTO
+                {
+                    Month = $"{g.Key.Year}-{g.Key.Month:00}",
+                    TotalUsage = g.Sum(dl => dl.DailyUsage)
+                });
+
+            return usageLimits;
+        }
+
+        public async Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType)
+        {
+            var user = await GetUserByEmailAsync(email);
+
+            if (user != null)
             {
-                Date = dl.Date,
-                DailyLimit = dl.DailyTotalCost
-            });
+                if (transactionType == "CREDIT")
+                {
+                    user.UnitBalance += amount;
+                }
+                else if (transactionType == "DEBIT")
+                {
+                    user.UnitBalance -= amount;
+                }
+
+                var transaction = new Transaction
+                {
+                    Email = email,
+                    Amount = amount,
+                    TransactionDate = DateTime.UtcNow,
+                    AccountId = accountId,
+                    TransactionType = transactionType
+                };
+
+                _context.Transactions.Add(transaction);
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task SaveDailyLimitsAsync(DailyLimit dailyLimit)
@@ -128,65 +162,23 @@ namespace CubeEnergy.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<int> GetTotalCostCountAsync(string email)
-        {
-            return await _context.Limits.CountAsync(l => l.Email == email);
-        }
-
         public async Task SaveDailyLimitAsync(DailyLimit dailyLimit)
         {
-            _context.DailyLimits.Add(dailyLimit);
+            _context.DailyLimits.Update(dailyLimit);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> GetTotalCostCountAsync(string email)
+        {
+            return await _context.DailyLimits
+                .Where(dl => dl.Email == email)
+                .CountAsync();
         }
 
         public async Task<CashWallet> GetCashWalletByEmailAsync(string email)
         {
             return await _context.CashWallets.FirstOrDefaultAsync(cw => cw.Email == email);
         }
-
-        public async Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType)
-        {
-            var cashWallet = await _context.CashWallets.FirstOrDefaultAsync(cw => cw.Email == email);
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.AccountId == accountId);
-
-            if (cashWallet == null || user == null)
-            {
-                throw new Exception("User or Cash Wallet not found");
-            }
-
-            if (transactionType == "CREDIT")
-            {
-                cashWallet.Balance += amount;
-                user.UnitBalance += amount;
-            }
-            else if (transactionType == "DEBIT")
-            {
-                cashWallet.Balance -= amount;
-                user.UnitBalance -= amount;
-            }
-            else
-            {
-                throw new Exception("Invalid transaction type");
-            }
-
-            _context.CashWallets.Update(cashWallet);
-            _context.Users.Update(user);
-
-            // Log the transaction
-            var transaction = new Transaction
-            {
-                Email = email,
-                AccountId = accountId,
-                Amount = amount,
-                TransactionType = transactionType,
-                TransactionDate = DateTime.UtcNow
-            };
-
-            _context.Transactions.Add(transaction);
-
-            await _context.SaveChangesAsync();
-        }
-
 
         public async Task LogTransactionAsync(Transaction transaction)
         {
@@ -196,40 +188,33 @@ namespace CubeEnergy.Repositories
 
         public async Task<(decimal cashWalletBalance, decimal userWalletBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId)
         {
+            var user = await GetUserByEmailAsync(email);
             var cashWallet = await _context.CashWallets.FirstOrDefaultAsync(cw => cw.Email == email);
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.AccountId == accountId);
 
-            if (cashWallet == null || user == null)
-            {
-                throw new Exception("User or Cash Wallet not found");
-            }
+            if (user == null || cashWallet == null)
+                throw new Exception("User or Cash Wallet not found.");
 
             if (cashWallet.Balance < amount)
-            {
-                throw new Exception("Insufficient funds in Cash Wallet");
-            }
+                throw new Exception("Insufficient cash wallet balance.");
 
-            // Debit Cash Wallet
             cashWallet.Balance -= amount;
-
-            // Credit User Wallet (assuming UnitBalance is the user wallet)
             user.UnitBalance += amount;
 
-            // Log the transaction
+            _context.CashWallets.Update(cashWallet);
+            _context.Users.Update(user);
+
             var transaction = new Transaction
             {
                 Email = email,
+                Amount = amount,
+                TransactionDate = DateTime.UtcNow,
                 AccountId = accountId,
-                Amount = -amount,  // Negative for debit
-                TransactionType = "DEBIT",
-                TransactionDate = DateTime.UtcNow
+                TransactionType = "DEBIT"
             };
 
             _context.Transactions.Add(transaction);
 
-            // Save changes
             await _context.SaveChangesAsync();
-
             return (cashWallet.Balance, user.UnitBalance);
         }
     }
