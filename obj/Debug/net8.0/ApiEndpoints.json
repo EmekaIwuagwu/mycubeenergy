@@ -372,6 +372,22 @@
   },
   {
     "ContainingType": "CubeEnergy.Controllers.UserController",
+    "Method": "DebitCashWallet",
+    "RelativePath": "api/User/debitCashWallet",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CubeEnergy.DTOs.DebitCashWalletDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CubeEnergy.Controllers.UserController",
     "Method": "DeleteAccount",
     "RelativePath": "api/User/delete-account",
     "HttpMethod": "DELETE",
@@ -633,6 +649,27 @@
         "Name": "amount",
         "Type": "System.Decimal",
         "IsRequired": false
+      },
+      {
+        "Name": "accountId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CubeEnergy.Controllers.UserController",
+    "Method": "UpdateCashWallet",
+    "RelativePath": "api/User/updateCashWallet",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "CubeEnergy.DTOs.UpdateCashWalletDTO",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

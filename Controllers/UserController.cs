@@ -1,5 +1,6 @@
 ﻿using CubeEnergy.DTOs;
 using CubeEnergy.Models;
+using CubeEnergy.Repositories;
 using CubeEnergy.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +15,7 @@ namespace CubeEnergy.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
+        private readonly IUserRepository _userRepository;
 
         public UserController(UserService userService)
         {
@@ -178,6 +180,21 @@ namespace CubeEnergy.Controllers
         {
             var usageLimits = await _userService.GetUsageLimitsByMonthAsync(email, startDate, endDate);
             return Ok(usageLimits);
+        }
+
+        [HttpPut("updateCashWallet")]
+        public async Task<IActionResult> UpdateCashWallet([FromBody] UpdateCashWalletDTO dto)
+        {
+            // Ensure you have all required parameters
+            await _userRepository.UpdateCashWalletAsync(dto.Email, dto.Amount, dto.AccountId, "CREDIT");
+            return Ok(new { Message = "Cash wallet updated successfully" });
+        }
+
+        [HttpPut("debitCashWallet")]
+        public async Task<IActionResult> DebitCashWallet([FromBody] DebitCashWalletDTO dto)
+        {
+            var balances = await _userRepository.DebitCashWalletAndCreditUserAsync(dto.Email, dto.Amount, dto.AccountId);
+            return Ok(new { CashWalletBalance = balances.cashWalletBalance, UserWalletBalance = balances.userWalletBalance });
         }
 
     }

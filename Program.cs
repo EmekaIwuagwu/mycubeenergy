@@ -62,6 +62,7 @@ builder.Services.AddSingleton(provider =>
     return new Cloudinary(account);
 });
 
+// Register FormFileOperationFilter if used in Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -70,7 +71,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "CubeEnergy API",
+        Title = "MyCubeEnergy API",
         Version = "v1",
         Description = "API for CubeEnergy including KYC, Authentication, and more.",
         Contact = new OpenApiContact
@@ -105,7 +106,7 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 
-    // Register the FormFileOperationFilter
+    // Register the FormFileOperationFilter if used
     options.OperationFilter<FormFileOperationFilter>();
 });
 

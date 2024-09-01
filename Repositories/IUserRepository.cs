@@ -25,5 +25,14 @@ namespace CubeEnergy.Repositories
         Task SaveDailyLimitsAsync(DailyLimit dailyLimit);
         Task SaveDailyLimitAsync(DailyLimit dailyLimit);
         Task<int> GetTotalCostCountAsync(string email);
+
+        // New Methods for Cash Wallet Management
+        Task<CashWallet> GetCashWalletByEmailAsync(string email);
+        Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType);
+
+        Task LogTransactionAsync(Transaction transaction);
+
+        // New Method to Debit Cash Wallet and Credit User Wallet
+        Task<(decimal cashWalletBalance, decimal userWalletBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId);
     }
 }
