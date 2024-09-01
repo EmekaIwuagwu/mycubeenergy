@@ -5,6 +5,6 @@
         public string Email { get; set; }
         public string AccountId { get; set; }
         public decimal Amount { get; set; }
-        public decimal TransactionType { get; set; }
+        public string TransactionType { get; set; }
     }
 }
