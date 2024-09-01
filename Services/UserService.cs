@@ -69,67 +69,10 @@ namespace CubeEnergy.Services
             return await _userRepository.GetUserByEmailAsync(email);
         }
 
-        public async Task<User> GetUserByEmailOrIdAsync(string email, int userId)
+        public async Task<bool> ShareUnitsAsync(string originAccountId, string destinationAccountId, decimal amount)
         {
-            if (!string.IsNullOrEmpty(email))
-            {
-                return await _userRepository.GetUserByEmailAsync(email);
-            }
-
-            return await _userRepository.GetUserByIdAsync(userId);
+            return await _userRepository.ShareUnitsAsync(originAccountId, destinationAccountId, amount);
         }
-
-        public async Task CalculateAndUpdateBillsUsageAsync(string email, TimeSpan usageDuration)
-        {
-            var user = await _userRepository.GetUserByEmailAsync(email);
-            if (user != null)
-            {
-                // Calculate the total bills usage
-                decimal totalUsage = (decimal)usageDuration.TotalHours * BillsUsageRatePerHour;
-
-                // Update bills_use and unit_balance
-                user.BillsUse += totalUsage;
-                user.UnitBalance -= totalUsage;
-
-                await _userRepository.UpdateUserAsync(user);
-            }
-        }
-
-        public async Task UpdateBalanceAndLogTransactionAsync(string email, decimal amount, string accountId, string transactionType)
-        {
-            var user = await _userRepository.GetUserByEmailAsync(email);
-            if (user != null)
-            {
-                user.UnitBalance += amount;
-
-                var transaction = new Transaction
-                {
-                    Email = email,
-                    Amount = amount,
-                    AccountId = accountId,
-                    TransactionType = transactionType,
-                    TransactionDate = DateTime.Now,
-                    Description = "Payment received and balance updated"
-                };
-
-                await _userRepository.UpdateUserAsync(user);
-                await _transactionRepository.AddTransactionAsync(transaction);
-            }
-        }
-
-        /*public async Task<TotalCostDTO> CalculateTotalCostAsync(string email)
-        {
-            var totalCost = await _userRepository.CalculateTotalCostAsync(email);
-            var count = await _userRepository.GetTotalCostCountAsync(email);
-
-            return new TotalCostDTO
-            {
-                Email = email,
-                Count = count,
-                TotalCost = totalCost
-            };
-        }
-        */
 
         public async Task<decimal> CalculateTotalCostAsync(string email)
         {
@@ -141,22 +84,34 @@ namespace CubeEnergy.Services
             return await _userRepository.GetUsageLimitsByMonthAsync(email, startDate, endDate);
         }
 
-        public async Task<Result> ShareUnitsAsync(string originAccountId, string destinationAccountId, decimal amount)
+        public async Task UpdateBalanceAndLogTransactionAsync(string email, decimal amount, string accountId, string transactionType)
         {
-            var result = new Result();
-            var success = await _userRepository.ShareUnitsAsync(originAccountId, destinationAccountId, amount);
+            await _userRepository.UpdateCashWalletAsync(email, amount, accountId, transactionType);
 
-            if (success)
+            var transaction = new Transaction
             {
-                result.Success = true;
-            }
-            else
-            {
-                result.Success = false;
-                result.ErrorMessage = "Failed to share units. Please check account details or balance.";
-            }
+                Email = email,
+                Amount = amount,
+                TransactionDate = DateTime.Now,
+                TransactionType = transactionType
+            };
 
-            return result;
+            await _userRepository.LogTransactionAsync(transaction);
+        }
+
+        public async Task<(decimal cashWalletBalance, decimal userWalletBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId)
+        {
+            return await _userRepository.DebitCashWalletAndCreditUserAsync(email, amount, accountId);
+        }
+
+        public async Task SaveDailyLimitsAsync(DailyLimit dailyLimit)
+        {
+            await _userRepository.SaveDailyLimitsAsync(dailyLimit);
+        }
+
+        public async Task<int> GetTotalCostCountAsync(string email)
+        {
+            return await _userRepository.GetTotalCostCountAsync(email);
         }
     }
 }

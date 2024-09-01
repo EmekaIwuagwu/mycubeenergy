@@ -48,7 +48,7 @@ namespace CubeEnergy.Services
                 Date = DateTime.UtcNow
             };
 
-            await _userRepository.SaveDailyLimitAsync(dailyLimitRecord); // This should now work
+            await _userRepository.SaveDailyLimitsAsync(dailyLimitRecord); // This should now work
         }
     }
 }

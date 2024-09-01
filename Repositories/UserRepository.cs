@@ -2,6 +2,7 @@
 using CubeEnergy.DTOs;
 using CubeEnergy.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +13,27 @@ namespace CubeEnergy.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<UserRepository> _logger;
 
-        public UserRepository(ApplicationDbContext context)
+        public UserRepository(ApplicationDbContext context, ILogger<UserRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<User> GetUserByIdAsync(int id)
         {
             return await _context.Users.FindAsync(id);
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Username == email);
+        }
+
+        public async Task<User> GetUserByAccountIdAsync(string accountId)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.AccountId == accountId);
         }
 
         public async Task UpdateUserAsync(User user)
@@ -33,27 +46,6 @@ namespace CubeEnergy.Repositories
         {
             var user = await GetUserByIdAsync(id);
             _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<UnitPrice> SaveUnitPriceAsync(UnitPrice price)
-        {
-            _context.UnitPrices.Add(price);
-            await _context.SaveChangesAsync();
-            return price;
-        }
-
-        public async Task<UnitPrice> UpdateUnitPriceAsync(UnitPrice price)
-        {
-            _context.UnitPrices.Update(price);
-            await _context.SaveChangesAsync();
-            return price;
-        }
-
-        public async Task DeleteUnitPriceAsync(int id)
-        {
-            var price = await _context.UnitPrices.FindAsync(id);
-            _context.UnitPrices.Remove(price);
             await _context.SaveChangesAsync();
         }
 
@@ -70,16 +62,6 @@ namespace CubeEnergy.Repositories
         public async Task<UnitPrice> GetUnitPriceAsync(int id)
         {
             return await _context.UnitPrices.FindAsync(id);
-        }
-
-        public async Task<User> GetUserByEmailAsync(string email)
-        {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Username == email);
-        }
-
-        public async Task<User> GetUserByAccountIdAsync(string accountId)
-        {
-            return await _context.Users.FirstOrDefaultAsync(u => u.AccountId == accountId);
         }
 
         public async Task<bool> ShareUnitsAsync(string originAccountId, string destinationAccountId, decimal amount)
@@ -126,63 +108,57 @@ namespace CubeEnergy.Repositories
             return usageLimits;
         }
 
-        public async Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType)
-        {
-            var cashWallet = await _context.CashWallets.FirstOrDefaultAsync(cw => cw.Email == email);
-
-            if (cashWallet != null)
-            {
-                if (transactionType == "CREDIT")
-                {
-                    cashWallet.Balance += amount;
-                }
-                else if (transactionType == "DEBIT")
-                {
-                    cashWallet.Balance -= amount;
-                }
-
-                var transaction = new Transaction
-                {
-                    Email = email,
-                    Amount = amount,
-                    TransactionDate = DateTime.UtcNow,
-                    Description = "Cash Wallet Txn",
-                    AccountId = accountId,
-                    TransactionType = transactionType
-                };
-
-                _context.Transactions.Add(transaction);
-                _context.CashWallets.Update(cashWallet);
-                await _context.SaveChangesAsync();
-            }
-            else
-            {
-                throw new Exception("Cash Wallet not found.");
-            }
-        }
-
-        public async Task SaveDailyLimitsAsync(DailyLimit dailyLimit)
-        {
-            _context.DailyLimits.Add(dailyLimit);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task SaveDailyLimitAsync(DailyLimit dailyLimit)
-        {
-            _context.DailyLimits.Update(dailyLimit);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<int> GetTotalCostCountAsync(string email)
-        {
-            return await _context.DailyLimits
-                .Where(dl => dl.Email == email)
-                .CountAsync();
-        }
-
         public async Task<CashWallet> GetCashWalletByEmailAsync(string email)
         {
             return await _context.CashWallets.FirstOrDefaultAsync(cw => cw.Email == email);
+        }
+
+        public async Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType)
+        {
+            _logger.LogInformation("Updating cash wallet. Email: {Email}, Amount: {Amount}, AccountId: {AccountId}, TransactionType: {TransactionType}",
+                email, amount, accountId, transactionType);
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == email);
+            if (user == null)
+            {
+                throw new ArgumentException("User not found.");
+            }
+
+            if (transactionType == "Credit")
+            {
+                user.UnitBalance += amount;
+            }
+            else if (transactionType == "Debit" && user.UnitBalance >= amount)
+            {
+                user.UnitBalance -= amount;
+            }
+            else
+            {
+                throw new ArgumentException("Invalid transaction type or insufficient balance.");
+            }
+
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Cash wallet updated successfully for Email: {Email}", email);
+        }
+
+        public async Task<(decimal cashWalletBalance, decimal userWalletBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId)
+        {
+            var cashWallet = await _context.CashWallets.FirstOrDefaultAsync(cw => cw.Email == email);
+            var user = await GetUserByAccountIdAsync(accountId);
+
+            if (cashWallet == null || user == null || cashWallet.Balance < amount)
+            {
+                throw new ArgumentException("Insufficient funds or user not found.");
+            }
+
+            cashWallet.Balance -= amount;
+            user.UnitBalance += amount;
+
+            _context.CashWallets.Update(cashWallet);
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            return (cashWallet.Balance, user.UnitBalance);
         }
 
         public async Task LogTransactionAsync(Transaction transaction)
@@ -191,41 +167,46 @@ namespace CubeEnergy.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<(decimal cashWalletBalance, decimal userWalletBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId)
+        public async Task<int> GetTotalCostCountAsync(string email)
         {
-            var user = await GetUserByEmailAsync(email);
-            var cashWallet = await _context.CashWallets.FirstOrDefaultAsync(cw => cw.Email == email);
-            var unitPrice = await _context.UnitPrices.FirstOrDefaultAsync(); // Assuming one price is applicable for all
-
-            if (user == null || cashWallet == null || unitPrice == null)
-                throw new Exception("User, Cash Wallet, or Unit Price not found.");
-
-            if (cashWallet.Balance < amount)
-                throw new Exception("Insufficient cash wallet balance.");
-
-            // Calculate unit balance
-            var unitBalance = amount * unitPrice.Price;
-
-            cashWallet.Balance -= amount;
-            user.UnitBalance += unitBalance;
-
-            _context.CashWallets.Update(cashWallet);
-            _context.Users.Update(user);
-
-            var transaction = new Transaction
-            {
-                Email = email,
-                Amount = amount,
-                TransactionDate = DateTime.UtcNow,
-                Description = "Cash Wallet Txn - Fund Wallet",
-                AccountId = accountId,
-                TransactionType = "DEBIT"
-            };
-
-            _context.Transactions.Add(transaction);
-
-            await _context.SaveChangesAsync();
-            return (cashWallet.Balance, user.UnitBalance);
+            return await _context.DailyLimits.Where(dl => dl.Email == email).CountAsync();
         }
+
+        public async Task SaveDailyLimitsAsync(DailyLimit dailyLimit)
+        {
+            _context.DailyLimits.Add(dailyLimit);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteUnitPriceAsync(int id)
+        {
+            var unitPrice = await _context.UnitPrices.FindAsync(id);
+            if (unitPrice != null)
+            {
+                _context.UnitPrices.Remove(unitPrice);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<UnitPrice> UpdateUnitPriceAsync(UnitPrice unitPrice)
+        {
+            _context.UnitPrices.Update(unitPrice);
+            await _context.SaveChangesAsync();
+            return unitPrice;
+        }
+
+        public async Task<UnitPrice> SaveUnitPriceAsync(UnitPrice unitPrice)
+        {
+            _context.UnitPrices.Add(unitPrice);
+            await _context.SaveChangesAsync();
+            return unitPrice;
+        }
+
+        public async Task SaveDailyLimitAsync(DailyLimit dailyLimit)
+        {
+            _context.DailyLimits.Add(dailyLimit);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

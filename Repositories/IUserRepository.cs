@@ -23,7 +23,6 @@ namespace CubeEnergy.Repositories
         Task<decimal> CalculateTotalCostAsync(string email);
         Task<IEnumerable<UsageLimitDTO>> GetUsageLimitsByMonthAsync(string email, DateTime startDate, DateTime endDate);
         Task SaveDailyLimitsAsync(DailyLimit dailyLimit);
-        Task SaveDailyLimitAsync(DailyLimit dailyLimit);
         Task<int> GetTotalCostCountAsync(string email);
 
         // New Methods for Cash Wallet Management
