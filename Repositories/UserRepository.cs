@@ -58,7 +58,7 @@ namespace CubeEnergy.Repositories
             return await _context.UnitPrices.FirstOrDefaultAsync(); // Add as required
         }
 
-        public async Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType)
+        /*public async Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType)
         {
             var user = await GetUserByEmailAsync(email);
             if (user != null)
@@ -73,6 +73,40 @@ namespace CubeEnergy.Repositories
                 }
 
                 _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+            }
+        }
+        */
+
+        public async Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType)
+        {
+            var user = await GetUserByEmailAsync(email);
+            if (user != null)
+            {
+                // Insert record into CashWallets table
+                var cashWallet = new CashWallet
+                {
+                    Email = email,
+                    Balance = transactionType == "Credit" ? user.UnitBalance + amount : user.UnitBalance - amount,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await _context.CashWallets.AddAsync(cashWallet);
+
+                // Save the transaction details into the Transactions table
+                var transaction = new Transaction
+                {
+                    Email = email,
+                    Amount = amount,
+                    TransactionType = transactionType,
+                    AccountId = accountId,
+                    Description = "New Cash In Payment",
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await _context.Transactions.AddAsync(transaction);
+
+                // Save changes to both tables
                 await _context.SaveChangesAsync();
             }
         }
