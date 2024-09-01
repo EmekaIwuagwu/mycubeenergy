@@ -128,6 +128,7 @@ namespace CubeEnergy.Repositories
 
         public async Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType)
         {
+            string desc = "Cash Wallet Txn";
             var user = await GetUserByEmailAsync(email);
 
             if (user != null)
@@ -146,6 +147,7 @@ namespace CubeEnergy.Repositories
                     Email = email,
                     Amount = amount,
                     TransactionDate = DateTime.UtcNow,
+                    Description = desc,
                     AccountId = accountId,
                     TransactionType = transactionType
                 };
@@ -188,6 +190,7 @@ namespace CubeEnergy.Repositories
 
         public async Task<(decimal cashWalletBalance, decimal userWalletBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId)
         {
+            string desc = "Cash Wallet Txn - Fund Wallet";
             var user = await GetUserByEmailAsync(email);
             var cashWallet = await _context.CashWallets.FirstOrDefaultAsync(cw => cw.Email == email);
 
@@ -208,6 +211,7 @@ namespace CubeEnergy.Repositories
                 Email = email,
                 Amount = amount,
                 TransactionDate = DateTime.UtcNow,
+                Description = desc,
                 AccountId = accountId,
                 TransactionType = "DEBIT"
             };
