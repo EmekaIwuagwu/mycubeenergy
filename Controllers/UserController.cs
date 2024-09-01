@@ -97,7 +97,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpPut("update-balance")]
-        public async Task<IActionResult> UpdateBalance([FromQuery] string email, [FromQuery] decimal amount)
+        public async Task<IActionResult> UpdateBalance([FromQuery] string email, [FromQuery] decimal amount, [FromQuery] string accountId)
         {
             if (amount <= 0)
             {
@@ -110,7 +110,7 @@ namespace CubeEnergy.Controllers
                 return NotFound("User not found.");
             }
 
-            await _userService.UpdateBalanceAndLogTransactionAsync(email, amount);
+            await _userService.UpdateBalanceAndLogTransactionAsync(email, amount, accountId);
 
             return Ok(new { Message = "Balance updated successfully.", NewBalance = user.UnitBalance });
         }
