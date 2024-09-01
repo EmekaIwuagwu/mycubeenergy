@@ -267,6 +267,7 @@ namespace CubeEnergy.Repositories
                 {
                     Email = email,
                     Balance = transactionType == "Credit" ? amount : -amount,
+                    AccountId = accountId,
                     CreatedAt = DateTime.UtcNow
                 };
                 await _context.CashWallets.AddAsync(cashWallet);
