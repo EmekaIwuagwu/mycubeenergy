@@ -128,18 +128,17 @@ namespace CubeEnergy.Repositories
 
         public async Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType)
         {
-            string desc = "Cash Wallet Txn";
-            var user = await GetUserByEmailAsync(email);
+            var cashWallet = await _context.CashWallets.FirstOrDefaultAsync(cw => cw.Email == email);
 
-            if (user != null)
+            if (cashWallet != null)
             {
                 if (transactionType == "CREDIT")
                 {
-                    user.UnitBalance += amount;
+                    cashWallet.Balance += amount;
                 }
                 else if (transactionType == "DEBIT")
                 {
-                    user.UnitBalance -= amount;
+                    cashWallet.Balance -= amount;
                 }
 
                 var transaction = new Transaction
@@ -147,14 +146,18 @@ namespace CubeEnergy.Repositories
                     Email = email,
                     Amount = amount,
                     TransactionDate = DateTime.UtcNow,
-                    Description = desc,
+                    Description = "Cash Wallet Txn",
                     AccountId = accountId,
                     TransactionType = transactionType
                 };
 
                 _context.Transactions.Add(transaction);
-                _context.Users.Update(user);
+                _context.CashWallets.Update(cashWallet);
                 await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new Exception("Cash Wallet not found.");
             }
         }
 
@@ -190,18 +193,21 @@ namespace CubeEnergy.Repositories
 
         public async Task<(decimal cashWalletBalance, decimal userWalletBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId)
         {
-            string desc = "Cash Wallet Txn - Fund Wallet";
             var user = await GetUserByEmailAsync(email);
             var cashWallet = await _context.CashWallets.FirstOrDefaultAsync(cw => cw.Email == email);
+            var unitPrice = await _context.UnitPrices.FirstOrDefaultAsync(); // Assuming one price is applicable for all
 
-            if (user == null || cashWallet == null)
-                throw new Exception("User or Cash Wallet not found.");
+            if (user == null || cashWallet == null || unitPrice == null)
+                throw new Exception("User, Cash Wallet, or Unit Price not found.");
 
             if (cashWallet.Balance < amount)
                 throw new Exception("Insufficient cash wallet balance.");
 
+            // Calculate unit balance
+            var unitBalance = amount * unitPrice.Price;
+
             cashWallet.Balance -= amount;
-            user.UnitBalance += amount;
+            user.UnitBalance += unitBalance;
 
             _context.CashWallets.Update(cashWallet);
             _context.Users.Update(user);
@@ -211,7 +217,7 @@ namespace CubeEnergy.Repositories
                 Email = email,
                 Amount = amount,
                 TransactionDate = DateTime.UtcNow,
-                Description = desc,
+                Description = "Cash Wallet Txn - Fund Wallet",
                 AccountId = accountId,
                 TransactionType = "DEBIT"
             };

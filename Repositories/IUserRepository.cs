@@ -29,7 +29,6 @@ namespace CubeEnergy.Repositories
         // New Methods for Cash Wallet Management
         Task<CashWallet> GetCashWalletByEmailAsync(string email);
         Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType);
-
         Task LogTransactionAsync(Transaction transaction);
 
         // New Method to Debit Cash Wallet and Credit User Wallet
