@@ -216,6 +216,40 @@ namespace CubeEnergy.Repositories
             _context.DailyLimits.Add(dailyLimit);
             await _context.SaveChangesAsync();
         }
+
+        public async Task InsertCashWalletAndTransactionAsync(string email, decimal amount, string accountId, string transactionType)
+        {
+            var user = await GetUserByEmailAsync(email);
+            if (user != null)
+            {
+                // Insert record into CashWallets table
+                var cashWallet = new CashWallet
+                {
+                    Email = email,
+                    Balance = transactionType == "Credit" ? user.UnitBalance + amount : user.UnitBalance - amount,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await _context.CashWallets.AddAsync(cashWallet);
+
+                // Save the transaction details into the Transactions table
+                var transaction = new Transaction
+                {
+                    Email = email,
+                    Amount = amount,
+                    TransactionType = transactionType,
+                    AccountId = accountId,
+                    Description = "New Inflow TXn",
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await _context.Transactions.AddAsync(transaction);
+
+                // Save changes to both tables
+                await _context.SaveChangesAsync();
+            }
+        }
+
     }
 
 }

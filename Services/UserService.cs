@@ -98,6 +98,11 @@ namespace CubeEnergy.Services
         {
             return await _userRepository.DebitCashWalletAndCreditUserAsync(email, amount, accountId);
         }
+
+        public async Task InsertCashWalletAndTransactionAsync(string email, decimal amount, string accountId, string transactionType) 
+        {
+            await _userRepository.InsertCashWalletAndTransactionAsync(email, amount, accountId, transactionType);
+        }
     }
 
 }

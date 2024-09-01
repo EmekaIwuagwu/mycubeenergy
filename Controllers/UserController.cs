@@ -337,7 +337,7 @@ namespace CubeEnergy.Controllers
             return Ok(usageLimits);
         }
 
-        [HttpPut("updateCashWallet")]
+        /*[HttpPut("updateCashWallet")]
         public async Task<IActionResult> UpdateCashWallet([FromBody] UpdateCashWalletDTO dto)
         {
             if (dto == null)
@@ -356,6 +356,7 @@ namespace CubeEnergy.Controllers
                 return StatusCode(500, "Internal server error.");
             }
         }
+        */
 
         [HttpPut("debitCashWallet")]
         public async Task<IActionResult> DebitCashWallet([FromBody] DebitCashWalletDTO dto)
@@ -394,6 +395,27 @@ namespace CubeEnergy.Controllers
             }
         }
 
+        [HttpPost("update-wallet")]
+        public async Task<IActionResult> UpdateCashWallet([FromBody] CashWalletUpdateModel model)
+        {
+            try
+            {
+                await _userService.InsertCashWalletAndTransactionAsync(model.Email, model.Amount, model.AccountId, model.TransactionType);
+                return Ok(new { message = "Cash wallet and transaction updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
 
     }
+}
+
+public class CashWalletUpdateModel
+{
+    public string Email { get; set; }
+    public decimal Amount { get; set; }
+    public string AccountId { get; set; }
+    public string TransactionType { get; set; }
 }
