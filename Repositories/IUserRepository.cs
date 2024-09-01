@@ -8,29 +8,21 @@ namespace CubeEnergy.Repositories
 {
     public interface IUserRepository
     {
-        Task<User> GetUserByIdAsync(int id);
+        Task<User> GetUserByAccountIdAsync(string accountId); // Add this method
+        Task SaveDailyLimitsAsync(DailyLimit dailyLimit);
+        Task<User> GetUserByEmailAsync(string email);
+        Task<User> GetUserByEmailOrIdAsync(string email, int userId);
+        Task<bool> DeleteUserAsync(int userId);
         Task UpdateUserAsync(User user);
-        Task DeleteUserAsync(int id);
-        Task<UnitPrice> SaveUnitPriceAsync(UnitPrice price);
-        Task<UnitPrice> UpdateUnitPriceAsync(UnitPrice price);
-        Task DeleteUnitPriceAsync(int id);
+        Task<UnitPrice> GetUnitPriceAsync(int id);
+        Task<UnitPrice> GetUnitPriceAsync(); // Add if needed
+        Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType);
         Task<IEnumerable<Transaction>> GetTransactionsByEmailAsync(string email);
         Task<IEnumerable<Transaction>> GetTransactionsByDateAsync(string email, DateTime from, DateTime to);
-        Task<UnitPrice> GetUnitPriceAsync(int id);
-        Task<User> GetUserByEmailAsync(string email);
-        Task<User> GetUserByAccountIdAsync(string accountId);
-        Task<bool> ShareUnitsAsync(string originAccountId, string destinationAccountId, decimal amount);
+        Task<Result> ShareUnitsAsync(string originAccountId, string destinationAccountId, decimal amount);
         Task<decimal> CalculateTotalCostAsync(string email);
         Task<IEnumerable<UsageLimitDTO>> GetUsageLimitsByMonthAsync(string email, DateTime startDate, DateTime endDate);
-        Task SaveDailyLimitsAsync(DailyLimit dailyLimit);
-        Task<int> GetTotalCostCountAsync(string email);
-
-        // New Methods for Cash Wallet Management
-        Task<CashWallet> GetCashWalletByEmailAsync(string email);
-        Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType);
-        Task LogTransactionAsync(Transaction transaction);
-
-        // New Method to Debit Cash Wallet and Credit User Wallet
-        Task<(decimal cashWalletBalance, decimal userWalletBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId);
+        Task<(decimal CashWalletBalance, decimal UserWalletBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId);
     }
+
 }
