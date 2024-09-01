@@ -219,35 +219,43 @@ namespace CubeEnergy.Repositories
 
         public async Task InsertCashWalletAndTransactionAsync(string email, decimal amount, string accountId, string transactionType)
         {
-            var user = await GetUserByEmailAsync(email);
-            if (user != null)
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null)
             {
-                // Insert record into CashWallets table
-                var cashWallet = new CashWallet
-                {
-                    Email = email,
-                    Balance = transactionType == "Credit" ? user.UnitBalance + amount : user.UnitBalance - amount,
-                    CreatedAt = DateTime.UtcNow
-                };
-
-                await _context.CashWallets.AddAsync(cashWallet);
-
-                // Save the transaction details into the Transactions table
-                var transaction = new Transaction
-                {
-                    Email = email,
-                    Amount = amount,
-                    TransactionType = transactionType,
-                    AccountId = accountId,
-                    Description = "New Inflow TXn",
-                    CreatedAt = DateTime.UtcNow
-                };
-
-                await _context.Transactions.AddAsync(transaction);
-
-                // Save changes to both tables
-                await _context.SaveChangesAsync();
+                throw new ArgumentException("User not found.");
             }
+
+            if (transactionType == "Credit")
+            {
+                user.UnitBalance += amount;
+            }
+            else if (transactionType == "Debit")
+            {
+                user.UnitBalance -= amount;
+            }
+            else
+            {
+                throw new ArgumentException("Invalid transaction type.");
+            }
+
+            _context.Users.Update(user);
+
+            // Add a new transaction entry
+            var transaction = new Transaction
+            {
+                Email = email,
+                Amount = amount,
+                AccountId = accountId,
+                Description = "Wallet Txn",
+                TransactionType = transactionType,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _context.Transactions.AddAsync(transaction);
+
+            // Save changes to both tables
+            await _context.SaveChangesAsync();
         }
 
     }
