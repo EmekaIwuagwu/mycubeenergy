@@ -27,6 +27,7 @@ builder.Services.AddScoped<IKycRepository, KycRepository>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>(); // Register the Admin repository
 
 // Register services
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<KycService>();
 builder.Services.AddScoped<IInverterService, InverterService>();
 builder.Services.AddScoped<IAdminService, AdminService>(); // Register the Admin service
