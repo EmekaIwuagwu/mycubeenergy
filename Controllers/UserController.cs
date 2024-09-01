@@ -5,6 +5,8 @@ using CubeEnergy.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CubeEnergy.Controllers
@@ -17,9 +19,10 @@ namespace CubeEnergy.Controllers
         private readonly UserService _userService;
         private readonly IUserRepository _userRepository;
 
-        public UserController(UserService userService)
+        public UserController(UserService userService, IUserRepository userRepository)
         {
             _userService = userService;
+            _userRepository = userRepository;
         }
 
         [HttpGet("profile")]
@@ -60,30 +63,6 @@ namespace CubeEnergy.Controllers
 
             return NotFound();
         }
-
-        /*[HttpPost("enterUnitPrice")]
-        public async Task<IActionResult> EnterUnitPrice(UnitPriceDTO priceDto)
-        {
-            var price = new UnitPrice { Price = priceDto.Price };
-            var createdPrice = await _userService.SaveUnitPriceAsync(price);
-            return Ok(createdPrice);
-        }
-
-        [HttpPut("updateUnitPrice")]
-        public async Task<IActionResult> UpdateUnitPrice(UnitPriceDTO priceDto)
-        {
-            var price = new UnitPrice { Id = priceDto.Id, Price = priceDto.Price };
-            var updatedPrice = await _userService.UpdateUnitPriceAsync(price);
-            return Ok(new { Message = "Price for units updated Successfully", UnitPrice = updatedPrice });
-        }
-
-        [HttpDelete("deleteUnitPrice")]
-        public async Task<IActionResult> DeleteUnitPrice(int id)
-        {
-            await _userService.DeleteUnitPriceAsync(id);
-            return Ok("Price deleted successfully.");
-        }
-        */
 
         [HttpGet("calculateUnits")]
         public async Task<IActionResult> CalculateUnits(int id, int days)
@@ -133,21 +112,6 @@ namespace CubeEnergy.Controllers
             return Ok(transactions);
         }
 
-        /*[HttpPost("calculate-bills")]
-        public async Task<IActionResult> CalculateBills([FromQuery] string email, [FromQuery] double hours)
-        {
-            if (hours <= 0)
-            {
-                return BadRequest("Hours must be greater than zero.");
-            }
-
-            var usageDuration = TimeSpan.FromHours(hours);
-            await _userService.CalculateAndUpdateBillsUsageAsync(email, usageDuration);
-
-            return Ok("Bills usage calculated and balance updated.");
-        }
-        */
-
         [HttpPost("share-units")]
         public async Task<IActionResult> ShareUnits([FromBody] ShareUnitsDTO dto)
         {
@@ -196,6 +160,5 @@ namespace CubeEnergy.Controllers
             var balances = await _userRepository.DebitCashWalletAndCreditUserAsync(dto.Email, dto.Amount, dto.AccountId);
             return Ok(new { CashWalletBalance = balances.cashWalletBalance, UserWalletBalance = balances.userWalletBalance });
         }
-
     }
 }
