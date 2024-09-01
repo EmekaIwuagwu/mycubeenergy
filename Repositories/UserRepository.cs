@@ -219,6 +219,7 @@ namespace CubeEnergy.Repositories
 
         public async Task InsertCashWalletAndTransactionAsync(string email, decimal amount, string accountId, string transactionType)
         {
+            // Find the user by email
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
             if (user == null)
@@ -226,6 +227,7 @@ namespace CubeEnergy.Repositories
                 throw new ArgumentException("User not found.");
             }
 
+            // Update the user's unit balance based on the transaction type
             if (transactionType == "Credit")
             {
                 user.UnitBalance += amount;
@@ -239,9 +241,10 @@ namespace CubeEnergy.Repositories
                 throw new ArgumentException("Invalid transaction type.");
             }
 
+            // Update the Users table
             _context.Users.Update(user);
 
-            // Add a new transaction entry
+            // Add a new transaction entry to the Transactions table
             var transaction = new Transaction
             {
                 Email = email,
@@ -254,9 +257,38 @@ namespace CubeEnergy.Repositories
 
             await _context.Transactions.AddAsync(transaction);
 
+            // Update the CashWallet balance
+            var cashWallet = await _context.CashWallets.FirstOrDefaultAsync(cw => cw.Email == email);
+
+            if (cashWallet == null)
+            {
+                // If the user does not have a cash wallet record, create one
+                cashWallet = new CashWallet
+                {
+                    Email = email,
+                    Balance = transactionType == "Credit" ? amount : -amount,
+                    CreatedAt = DateTime.UtcNow
+                };
+                await _context.CashWallets.AddAsync(cashWallet);
+            }
+            else
+            {
+                // If the user has a cash wallet record, update the balance
+                if (transactionType == "Credit")
+                {
+                    cashWallet.Balance += amount;
+                }
+                else if (transactionType == "Debit")
+                {
+                    cashWallet.Balance -= amount;
+                }
+                _context.CashWallets.Update(cashWallet);
+            }
+
             // Save changes to both tables
             await _context.SaveChangesAsync();
         }
+
 
     }
 
