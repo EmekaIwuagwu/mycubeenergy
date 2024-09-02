@@ -77,7 +77,7 @@ builder.Services.AddSwaggerGen(options =>
         Description = "API for CubeEnergy including KYC, Authentication, and more.",
         Contact = new OpenApiContact
         {
-            Name = "CubeEnergy Support",
+            Name = "MyCubeEnergy Support",
             Email = "support@mycubeenergy.com"
         }
     });
