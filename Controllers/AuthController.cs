@@ -25,6 +25,7 @@ namespace CubeEnergy.Controllers
                 Username = registerDto.Username,
                 Password = registerDto.Password,
                 Fullname = registerDto.FullName,
+                Email = registerDto.Email,
                 Country = registerDto.Country,
                 Address = registerDto.Address,
                 Telephone = registerDto.Telephone,
