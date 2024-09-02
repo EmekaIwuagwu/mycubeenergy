@@ -198,10 +198,16 @@ namespace CubeEnergy.Repositories
                 throw new ArgumentException("Cash wallet not found.");
             }
 
-            // Step 4: Debit the user's CashWallet balance
+            // Step 4: Check if the cash wallet has enough balance
+            if (cashWallet.Balance < finalUnitBalance)
+            {
+                throw new ArgumentException("Insufficient balance in cash wallet.");
+            }
+
+            // Step 5: Debit the user's CashWallet balance
             cashWallet.Balance -= finalUnitBalance;
 
-            // Step 5: Update the user's UnitBalance in the Users table
+            // Step 6: Update the user's UnitBalance in the Users table
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
 
             if (user == null)
@@ -209,16 +215,18 @@ namespace CubeEnergy.Repositories
                 throw new ArgumentException("User not found.");
             }
 
-            user.UnitBalance += finalUnitBalance;
+            // Step 7: Add the amount (not finalUnitBalance) to the user's UnitBalance
+            user.UnitBalance += amount;
 
-            // Step 6: Save the updated balances in the CashWallets and Users tables
+            // Step 8: Save the updated balances in the CashWallets and Users tables
             _context.CashWallets.Update(cashWallet);
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
 
-            // Step 7: Return the updated balances as a tuple
+            // Step 9: Return the updated balances as a tuple
             return (cashWallet.Balance, user.UnitBalance);
         }
+
 
 
         public async Task<User> GetUserByAccountIdAsync(string accountId)
