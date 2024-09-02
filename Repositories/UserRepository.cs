@@ -177,34 +177,49 @@ namespace CubeEnergy.Repositories
             return Enumerable.Empty<UsageLimitDTO>();
         }
 
-        public async Task<(decimal CashWalletBalance, decimal UserWalletBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId)
+        public async Task<(decimal CashWalletBalance, decimal UserUnitBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId)
         {
-            var user = await GetUserByEmailAsync(email);
-            var unitPrice = await GetUnitPriceAsync(); // Adjust if needed
+            // Step 1: Get the unit price from the UnitPrices table
+            var unitPrice = await _context.UnitPrices.OrderByDescending(p => p.CreatedAt).FirstOrDefaultAsync();
 
-            if (user != null && unitPrice != null)
+            if (unitPrice == null)
             {
-                var totalCost = amount * unitPrice.Price;
-
-                // Update cash wallet balance
-                user.UnitBalance -= totalCost;
-
-                // Update user balance
-                var userWallet = await _context.Users.FirstOrDefaultAsync(u => u.AccountId == accountId);
-                if (userWallet != null)
-                {
-                    userWallet.UnitBalance += amount;
-                    _context.Users.Update(userWallet);
-                }
-
-                _context.Users.Update(user);
-                await _context.SaveChangesAsync();
-
-                return (user.UnitBalance, userWallet?.UnitBalance ?? 0);
+                throw new ArgumentException("Unit price not found.");
             }
 
-            return (0, 0);
+            // Step 2: Multiply price by amount to get finalUnitBalance
+            var finalUnitBalance = amount * unitPrice.Price;
+
+            // Step 3: Get the user's CashWallet using the email as an identifier
+            var cashWallet = await _context.CashWallets.FirstOrDefaultAsync(cw => cw.Email == email);
+
+            if (cashWallet == null)
+            {
+                throw new ArgumentException("Cash wallet not found.");
+            }
+
+            // Step 4: Debit the user's CashWallet balance
+            cashWallet.Balance -= finalUnitBalance;
+
+            // Step 5: Update the user's UnitBalance in the Users table
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null)
+            {
+                throw new ArgumentException("User not found.");
+            }
+
+            user.UnitBalance += finalUnitBalance;
+
+            // Step 6: Save the updated balances in the CashWallets and Users tables
+            _context.CashWallets.Update(cashWallet);
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            // Step 7: Return the updated balances as a tuple
+            return (cashWallet.Balance, user.UnitBalance);
         }
+
 
         public async Task<User> GetUserByAccountIdAsync(string accountId)
         {

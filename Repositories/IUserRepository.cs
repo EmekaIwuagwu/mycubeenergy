@@ -22,7 +22,7 @@ namespace CubeEnergy.Repositories
         Task<Result> ShareUnitsAsync(string originAccountId, string destinationAccountId, decimal amount);
         Task<decimal> CalculateTotalCostAsync(string email);
         Task<IEnumerable<UsageLimitDTO>> GetUsageLimitsByMonthAsync(string email, DateTime startDate, DateTime endDate);
-        Task<(decimal CashWalletBalance, decimal UserWalletBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId);
+        Task<(decimal CashWalletBalance, decimal UserUnitBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId);
         Task InsertCashWalletAndTransactionAsync(string email, decimal amount, string accountId, string transactionType);
     }
 
