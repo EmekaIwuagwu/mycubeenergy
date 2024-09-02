@@ -108,6 +108,11 @@ namespace CubeEnergy.Services
         {
             return _userRepository.GetUserDetailsByEmailAsync(email);
         }
+
+        public async Task<IEnumerable<MonthlyTotalDTO>> GetMonthlyTotalCostAsync(string email, int year)
+        {
+            return await _userRepository.GetMonthlyTotalCostAsync(email, year);
+        }
     }
 
 }

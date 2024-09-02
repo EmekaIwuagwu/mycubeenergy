@@ -409,6 +409,18 @@ namespace CubeEnergy.Controllers
             }
         }
 
+        [HttpGet("monthlyTotalCost")]
+        public async Task<ActionResult<IEnumerable<MonthlyTotalDTO>>> GetMonthlyTotalCost([FromQuery] string email, [FromQuery] int year)
+        {
+            if (string.IsNullOrEmpty(email) || year <= 0)
+            {
+                return BadRequest("Invalid parameters.");
+            }
+
+            var result = await _userService.GetMonthlyTotalCostAsync(email, year);
+            return Ok(result);
+        }
+
     }
 }
 
