@@ -2,6 +2,7 @@
 using CubeEnergy.Models;
 using CubeEnergy.Services;
 using CubeEnergy.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(AdminDTO adminDto)
         {
             var result = await _adminService.RegisterAdminAsync(adminDto);
@@ -33,6 +35,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginDTO loginDto)
         {
             var result = await _adminService.LoginAdminAsync(loginDto.Username, loginDto.Password);
@@ -53,6 +56,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpGet("users")]
+        [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _adminService.GetAllUsersAsync();
@@ -60,6 +64,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpPut("update-user/{accountId}")]
+        [Authorize]
         public async Task<IActionResult> UpdateUser(string accountId, UpdateUserDTO updateUserDto)
         {
             var result = await _adminService.UpdateUserAsync(accountId, updateUserDto);
@@ -72,6 +77,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpDelete("delete-user/{accountId}")]
+        [Authorize]
         public async Task<IActionResult> DeleteUser(string accountId)
         {
             await _adminService.DeleteUserAsync(accountId);
@@ -79,6 +85,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpDelete("deleteSuperAdmin/{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteSuperAdmin(int id)
         {
             await _adminService.DeleteSuperAdminAsync(id);
@@ -86,6 +93,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpPut("updateSuperAdmin/{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdateSuperAdmin(int id, UpdateSuperAdminDTO updateSuperAdminDto)
         {
             var result = await _adminService.UpdateSuperAdminAsync(id, updateSuperAdminDto);
@@ -98,6 +106,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpGet("track-payments")]
+        [Authorize]
         public async Task<IActionResult> TrackPayments(string emailOrAccountId)
         {
             var payments = await _adminService.GetPaymentsAsync(emailOrAccountId);
@@ -105,6 +114,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpGet("payment/{accountId}")]
+        [Authorize]
         public async Task<IActionResult> GetPaymentByAccountId(string accountId)
         {
             var payment = await _adminService.GetPaymentByAccountIdAsync(accountId);
@@ -112,6 +122,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpPost("enterUnitPrice")]
+        [Authorize]
         public async Task<IActionResult> EnterUnitPrice(UnitPriceDTO priceDto)
         {
             var result = await _adminService.SaveUnitPriceAsync(priceDto);
@@ -119,6 +130,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpPut("updateUnitPrice")]
+        [Authorize]
         public async Task<IActionResult> UpdateUnitPrice(UnitPriceDTO priceDto)
         {
             var result = await _adminService.UpdateUnitPriceAsync(priceDto);
@@ -126,6 +138,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpDelete("deleteUnitPrice/{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteUnitPrice(int id)
         {
             await _adminService.DeleteUnitPriceAsync(id);
@@ -133,6 +146,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpPost("return-payment")]
+        [Authorize]
         public async Task<IActionResult> ReturnPayment(ReturnPaymentDTO returnPaymentDto)
         {
             // Call the service to perform the return payment operation

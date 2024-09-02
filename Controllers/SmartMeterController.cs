@@ -8,11 +8,11 @@ namespace CubeEnergy.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class InverterController : ControllerBase
+    public class SmartMeterController : ControllerBase
     {
         private readonly IInverterService _inverterService;
 
-        public InverterController(IInverterService inverterService)
+        public SmartMeterController(IInverterService inverterService)
         {
             _inverterService = inverterService;
         }
