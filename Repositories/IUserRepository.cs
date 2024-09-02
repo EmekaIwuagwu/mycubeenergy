@@ -24,6 +24,7 @@ namespace CubeEnergy.Repositories
         Task<IEnumerable<UsageLimitDTO>> GetUsageLimitsByMonthAsync(string email, DateTime startDate, DateTime endDate);
         Task<(decimal CashWalletBalance, decimal UserUnitBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId);
         Task InsertCashWalletAndTransactionAsync(string email, decimal amount, string accountId, string transactionType);
+        Task<UserDetailDTO> GetUserDetailsByEmailAsync(string email);
     }
 
 }

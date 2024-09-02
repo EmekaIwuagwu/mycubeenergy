@@ -212,7 +212,7 @@ namespace CubeEnergy.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile([FromQuery] string email)
         {
-            var user = await _userService.GetUserByEmailAsync(email);
+            var user = await _userService.GetUserDetailsByEmailAsync(email);
             if (user != null)
             {
                 return Ok(user);

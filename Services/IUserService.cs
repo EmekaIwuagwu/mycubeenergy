@@ -17,6 +17,7 @@ namespace CubeEnergy.Services
         Task<IEnumerable<Transaction>> GetTransactionsByDateAsync(string email, DateTime from, DateTime to);
         Task<Result> ShareUnitsAsync(string originAccountId, string destinationAccountId, decimal amount);
         Task<decimal> CalculateTotalCostAsync(string email);
+        Task<UserDetailDTO> GetUserDetailsByEmailAsync(string email);
         Task<IEnumerable<UsageLimitDTO>> GetUsageLimitsByMonthAsync(string email, DateTime startDate, DateTime endDate);
         Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType);
         Task<(decimal CashWalletBalance, decimal UserWalletBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId);

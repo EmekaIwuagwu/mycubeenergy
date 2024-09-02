@@ -103,6 +103,11 @@ namespace CubeEnergy.Services
         {
             await _userRepository.InsertCashWalletAndTransactionAsync(email, amount, accountId, transactionType);
         }
+
+        public Task<UserDetailDTO> GetUserDetailsByEmailAsync(string email)
+        {
+            return _userRepository.GetUserDetailsByEmailAsync(email);
+        }
     }
 
 }

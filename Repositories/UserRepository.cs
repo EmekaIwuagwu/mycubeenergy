@@ -313,7 +313,18 @@ namespace CubeEnergy.Repositories
             await _context.SaveChangesAsync();
         }
 
-
+        public async Task<UserDetailDTO> GetUserDetailsByEmailAsync(string email)
+        {
+            return await _context.Users
+                .Where(u => u.Email == email)
+                .Select(u => new UserDetailDTO
+                {
+                    User = u,
+                    Kyc = _context.Kycs.FirstOrDefault(k => k.Id == u.Id),
+                    CashWallet = _context.CashWallets.FirstOrDefault(cw => cw.Email == email)
+                })
+                .FirstOrDefaultAsync();
+        }
     }
 
 }
