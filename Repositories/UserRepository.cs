@@ -328,19 +328,11 @@ namespace CubeEnergy.Repositories
 
         public async Task<IEnumerable<MonthlyTotalDTO>> GetMonthlyTotalCostAsync(string email, int year)
         {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == email);
-
-            if (user == null)
-            {
-                return Enumerable.Empty<MonthlyTotalDTO>();
-            }
-
             var startDate = new DateTime(year, 1, 1);
             var endDate = new DateTime(year, 12, 31);
 
             var monthlyTotals = await _context.DailyLimits
-                .Where(dl => dl.UserId == user.Id && dl.Date >= startDate && dl.Date <= endDate)
+                .Where(dl => dl.Email == email && dl.Date >= startDate && dl.Date <= endDate)
                 .GroupBy(dl => new { dl.Date.Year, dl.Date.Month })
                 .Select(g => new MonthlyTotalDTO
                 {
@@ -351,6 +343,7 @@ namespace CubeEnergy.Repositories
 
             return monthlyTotals;
         }
+
     }
 
 }
