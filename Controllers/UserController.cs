@@ -254,9 +254,9 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpGet("calculateUnits")]
-        public async Task<IActionResult> CalculateUnits([FromQuery] int id, [FromQuery] int days)
+        public async Task<IActionResult> CalculateUnits([FromQuery] int days)
         {
-            var unitPrice = await _userService.GetUnitPriceAsync(id);
+            var unitPrice = await _userService.GetUnitPriceAsync();
 
             if (unitPrice != null)
             {
