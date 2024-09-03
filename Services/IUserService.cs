@@ -7,6 +7,7 @@ namespace CubeEnergy.Services
     {
         Task<User> GetUserByEmailAsync(string email);
         Task<User> GetUserByEmailOrIdAsync(string email, int userId);
+        Task<string> GetEmailByAccountIdAsync(string accountId);
         Task InsertCashWalletAndTransactionAsync(string email, decimal amount, string accountId, string transactionType);
         Task<IEnumerable<MonthlyTotalDTO>> GetMonthlyTotalCostAsync(string email, int year);
         Task<bool> DeleteUserAsync(int userId);

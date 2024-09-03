@@ -26,6 +26,7 @@ namespace CubeEnergy.Services
 
         public async Task SaveDailyLimitAsync(string accountId, decimal hoursSpent)
         {
+            var email = await _userRepository.GetEmailByAccountIdAsync(accountId);
             var user = await _userRepository.GetUserByAccountIdAsync(accountId);
             if (user == null)
                 throw new Exception("User not found.");
@@ -42,6 +43,7 @@ namespace CubeEnergy.Services
             // Save daily limit to database
             var dailyLimitRecord = new DailyLimit
             {
+                Email = email,
                 AccountId = accountId,
                 DailyTotalCost = dailyLimit,
                 Date = DateTime.UtcNow

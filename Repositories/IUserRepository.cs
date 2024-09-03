@@ -10,6 +10,7 @@ namespace CubeEnergy.Repositories
     {
         Task<User> GetUserByAccountIdAsync(string accountId); // Add this method
         Task SaveDailyLimitsAsync(DailyLimit dailyLimit);
+        Task<string> GetEmailByAccountIdAsync(string accountId);
         Task<IEnumerable<MonthlyTotalDTO>> GetMonthlyTotalCostAsync(string email, int year);
         Task<User> GetUserByEmailAsync(string email);
         Task<User> GetUserByEmailOrIdAsync(string email, int userId);

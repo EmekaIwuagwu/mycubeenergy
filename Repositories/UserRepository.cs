@@ -240,6 +240,15 @@ namespace CubeEnergy.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<string> GetEmailByAccountIdAsync(string accountId)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.AccountId == accountId);
+
+            return user?.Email;
+        }
+
+
         public async Task InsertCashWalletAndTransactionAsync(string email, decimal amount, string accountId, string transactionType)
         {
             // Find the user by email
