@@ -32,11 +32,11 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpPost("saveDailyLimit")]
-        public async Task<IActionResult> SaveDailyLimit([FromQuery] string email, [FromQuery] string accountId, [FromQuery] decimal hoursSpent)
+        public async Task<IActionResult> SaveDailyLimit([FromQuery] string accountId, [FromQuery] decimal hoursSpent)
         {
             try
             {
-                await _inverterService.SaveDailyLimitAsync(email, accountId, hoursSpent);
+                await _inverterService.SaveDailyLimitAsync(accountId, hoursSpent);
                 return Ok(new { Message = "Daily limit saved successfully" });
             }
             catch (Exception ex)
