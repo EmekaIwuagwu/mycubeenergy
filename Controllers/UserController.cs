@@ -330,14 +330,14 @@ namespace CubeEnergy.Controllers
             }
         }
 
-        [HttpGet("showUsageLimitByMonth")]
+        /*[HttpGet("showUsageLimitByMonth")]
         public async Task<IActionResult> ShowUsageLimitByMonth([FromQuery] string email, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
         {
             var usageLimits = await _userService.GetUsageLimitsByMonthAsync(email, startDate, endDate);
             return Ok(usageLimits);
         }
 
-        /*[HttpPut("updateCashWallet")]
+        [HttpPut("updateCashWallet")]
         public async Task<IActionResult> UpdateCashWallet([FromBody] UpdateCashWalletDTO dto)
         {
             if (dto == null)
