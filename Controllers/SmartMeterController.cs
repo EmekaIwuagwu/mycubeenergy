@@ -37,7 +37,7 @@ namespace CubeEnergy.Controllers
             try
             {
                 await _inverterService.SaveDailyLimitAsync(accountId, hoursSpent);
-                return Ok(new { Message = "Daily limit saved successfully" });
+                return Ok(new { Message = "Success" });
             }
             catch (Exception ex)
             {
@@ -51,7 +51,7 @@ namespace CubeEnergy.Controllers
             try
             {
                 await _inverterService.RegisterSmartMeterAsync(macAddress, accountId);
-                return Ok(new { Message = "Smart meter registered successfully" });
+                return Ok(new { Message = "Success" });
             }
             catch (Exception ex)
             {
@@ -65,7 +65,7 @@ namespace CubeEnergy.Controllers
             try
             {
                 var accountId = await _inverterService.GetAccountIdByMacAddressAsync(macAddress);
-                return Ok(new { Message = "AccountId retrieved successfully", AccountId = accountId });
+                return Ok(new { Message = "Success", AccountId = accountId });
             }
             catch (Exception ex)
             {
