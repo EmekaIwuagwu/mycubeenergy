@@ -32,7 +32,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpPost("saveDailyLimit")]
-        public async Task<IActionResult> SaveDailyLimit([FromQuery] string accountId, [FromQuery] decimal hoursSpent)
+        public async Task<IActionResult> SaveDailyLimit(string accountId, decimal hoursSpent)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace CubeEnergy.Controllers
         }
 
         [HttpPost("registerSmartMeter")]
-        public async Task<IActionResult> RegisterSmartMeter([FromQuery] string macAddress, [FromQuery] string accountId)
+        public async Task<IActionResult> RegisterSmartMeter(string macAddress, string accountId)
         {
             try
             {

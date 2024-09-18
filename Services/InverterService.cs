@@ -13,9 +13,10 @@ namespace CubeEnergy.Services
         private readonly ApplicationDbContext _context;
         private const decimal DailyCostPerHour = 10.50m;
 
-        public InverterService(IUserRepository userRepository)
+        public InverterService(IUserRepository userRepository, ApplicationDbContext context)
         {
             _userRepository = userRepository;
+            _context = context;
         }
 
         public async Task<decimal> GetBalanceAsync(string accountId)
