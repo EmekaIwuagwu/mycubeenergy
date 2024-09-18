@@ -16,6 +16,7 @@ namespace CubeEnergy.Data
         public DbSet<UsageLimit> UsageLimits { get; set; }
         public DbSet<Limit> Limits { get; set; }
         public DbSet<DailyLimit> DailyLimits { get; set; }
+        public DbSet<SmartMeter> SmartMeters { get; set; }
         public DbSet<Admin> Admins { get; set; } // Added DbSet for Admins
         public DbSet<CashWallet> CashWallets { get; set; }
     }

@@ -1,5 +1,7 @@
-﻿using CubeEnergy.Models;
+﻿using CubeEnergy.Data;
+using CubeEnergy.Models;
 using CubeEnergy.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
@@ -8,6 +10,7 @@ namespace CubeEnergy.Services
     public class InverterService : IInverterService
     {
         private readonly IUserRepository _userRepository;
+        private readonly ApplicationDbContext _context;
         private const decimal DailyCostPerHour = 10.50m;
 
         public InverterService(IUserRepository userRepository)
@@ -50,6 +53,30 @@ namespace CubeEnergy.Services
             };
 
             await _userRepository.SaveDailyLimitsAsync(dailyLimitRecord); // This should now work
+        }
+
+        public async Task RegisterSmartMeterAsync(string macAddress, string accountId)
+        {
+            var smartMeter = new SmartMeter
+            {
+                MacAddress = macAddress,
+                AccountId = accountId,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.SmartMeters.Add(smartMeter);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<string> GetAccountIdByMacAddressAsync(string macAddress)
+        {
+            var smartMeter = await _context.SmartMeters
+             .FirstOrDefaultAsync(sm => sm.MacAddress == macAddress);
+
+            if (smartMeter == null)
+                throw new Exception("Smart meter not found.");
+
+            return smartMeter.AccountId;
         }
     }
 }

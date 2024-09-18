@@ -44,5 +44,33 @@ namespace CubeEnergy.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+
+        [HttpPost("registerSmartMeter")]
+        public async Task<IActionResult> RegisterSmartMeter([FromQuery] string macAddress, [FromQuery] string accountId)
+        {
+            try
+            {
+                await _inverterService.RegisterSmartMeterAsync(macAddress, accountId);
+                return Ok(new { Message = "Smart meter registered successfully" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+
+        [HttpGet("getAccountId/{macAddress}")]
+        public async Task<IActionResult> GetAccountIdByMacAddress(string macAddress)
+        {
+            try
+            {
+                var accountId = await _inverterService.GetAccountIdByMacAddressAsync(macAddress);
+                return Ok(new { Message = "AccountId retrieved successfully", AccountId = accountId });
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new { Message = ex.Message });
+            }
+        }
     }
 }
