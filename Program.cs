@@ -24,6 +24,7 @@ builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IKycRepository, KycRepository>();
+builder.Services.AddScoped<INewsletterRepository, NewsletterRepository>(); // Register NewsletterRepository
 builder.Services.AddScoped<IAdminRepository, AdminRepository>(); // Register the Admin repository
 
 // Register services
@@ -32,6 +33,7 @@ builder.Services.AddScoped<KycService>();
 builder.Services.AddScoped<IInverterService, InverterService>();
 builder.Services.AddScoped<IAdminService, AdminService>(); // Register the Admin service
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<INewsletterService, NewsletterService>(); // Register NewsletterService
 builder.Services.AddScoped<AuthService>();
 
 // Register utilities and other services

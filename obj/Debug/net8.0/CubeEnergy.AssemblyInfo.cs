@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CubeEnergy")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+80c2d4d5c326b10e3f324a99be87bab021a9ec65")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+49ae192cfe8312bd6e9ad8b24f1f1c70ca27cbbb")]
 [assembly: System.Reflection.AssemblyProductAttribute("CubeEnergy")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CubeEnergy")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
