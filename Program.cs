@@ -76,7 +76,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "MyCubeEnergy API",
         Version = "v1",
-        Description = "API for CubeEnergy including KYC, Authentication, and more.",
+        Description = "API for CubeEnergy including KYC, Authentication, and more. || C# and MySQL",
         Contact = new OpenApiContact
         {
             Name = "MyCubeEnergy Support",
