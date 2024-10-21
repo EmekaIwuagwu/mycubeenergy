@@ -43,7 +43,7 @@ namespace CubeEnergy.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginUserDTO loginDto)
         {
-            var result = await _authService.LoginUserAsync(loginDto.Username, loginDto.Password);
+            var result = await _authService.LoginUserAsync(loginDto.Email, loginDto.Password);
             if (result == null)
             {
                 return Unauthorized("Invalid username or password.");

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "I6mBkL9Gnbc=",
+  "dgSpecHash": "OK7uD7Lbbuo=",
   "success": true,
-  "projectFilePath": "C:\\Users\\HP\\Desktop\\Major_files\\mycubeenergy\\CubeEnergy.csproj",
+  "projectFilePath": "C:\\Users\\HP\\Desktop\\mycubeenergy\\CubeEnergy.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\HP\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\HP\\.nuget\\packages\\cloudinarydotnet\\1.26.2\\cloudinarydotnet.1.26.2.nupkg.sha512",

@@ -6252,11 +6252,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\HP\\Desktop\\Major_files\\mycubeenergy\\CubeEnergy.csproj",
+      "projectUniqueName": "C:\\Users\\HP\\Desktop\\mycubeenergy\\CubeEnergy.csproj",
       "projectName": "CubeEnergy",
-      "projectPath": "C:\\Users\\HP\\Desktop\\Major_files\\mycubeenergy\\CubeEnergy.csproj",
+      "projectPath": "C:\\Users\\HP\\Desktop\\mycubeenergy\\CubeEnergy.csproj",
       "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\HP\\Desktop\\Major_files\\mycubeenergy\\obj\\",
+      "outputPath": "C:\\Users\\HP\\Desktop\\mycubeenergy\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\HP\\AppData\\Roaming\\NuGet\\NuGet.Config",

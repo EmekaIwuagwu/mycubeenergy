@@ -10,6 +10,7 @@ namespace CubeEnergy.Repositories
         Task<string> GetUsernameByRefreshTokenAsync(string refreshToken);
         Task<User> RegisterUserAsync(User user);
         Task<User> GetUserByUsernameAsync(string username);
+        Task<User> GetUserByEmailAsync(string email);
         Task<OTP> GenerateOTPAsync(string email, string otp);
         Task<OTP> ValidateOTPAsync(string email, string otp);
         Task UpdatePasswordAsync(User user, string newPassword);

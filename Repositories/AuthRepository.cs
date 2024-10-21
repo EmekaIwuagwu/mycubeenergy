@@ -30,6 +30,11 @@ namespace CubeEnergy.Repositories
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
 
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+
         public async Task<OTP> GenerateOTPAsync(string email, string otp)
         {
             var newOtp = new OTP { Email = email, Code = otp };
