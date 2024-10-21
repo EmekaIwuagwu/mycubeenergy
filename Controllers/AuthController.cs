@@ -54,7 +54,7 @@ namespace CubeEnergy.Controllers
                 Message = "Login Successful",
                 User = new
                 {
-                    Username = loginDto.Email
+                    Email = loginDto.Email
                 },
                 Token = result.Token,
                 RefreshToken = result.RefreshToken
