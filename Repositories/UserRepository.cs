@@ -248,6 +248,10 @@ namespace CubeEnergy.Repositories
             return user?.Email;
         }
 
+        public async Task<CashWallet> GetByEmailAsync(string email)
+        {
+            return await _context.CashWallets.FirstOrDefaultAsync(c => c.Email == email);
+        }
 
         public async Task InsertCashWalletAndTransactionAsync(string email, decimal amount, string accountId, string transactionType)
         {
@@ -354,5 +358,5 @@ namespace CubeEnergy.Repositories
         }
 
     }
-
+    
 }

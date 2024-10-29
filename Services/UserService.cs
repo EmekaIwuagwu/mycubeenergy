@@ -118,6 +118,12 @@ namespace CubeEnergy.Services
         {
             return await _userRepository.GetEmailByAccountIdAsync(accountId);
         }
+
+        public async Task<CashWallet> GetCashWalletByEmailAsync(string email)
+        {
+            return await _userRepository.GetByEmailAsync(email);
+        }
+
     }
 
 }

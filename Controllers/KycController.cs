@@ -14,6 +14,7 @@ namespace CubeEnergy.Controllers
     {
         private readonly KycService _kycService;
         private readonly UserService _userService;
+        
 
         public KycController(KycService kycService, UserService userService)
         {
@@ -49,18 +50,21 @@ namespace CubeEnergy.Controllers
         {
             var user = await _userService.GetUserByEmailAsync(email);
             var kyc = await _kycService.GetKycByEmailAsync(email);
+            var cashWallet = await _userService.GetCashWalletByEmailAsync(email);
 
-            if (user != null && kyc != null)
+            if (user != null && kyc != null && cashWallet != null)
             {
                 var profileWithKyc = new
                 {
                     User = user,
-                    Kyc = kyc
+                    Kyc = kyc,
+                    CashWalletBalance = cashWallet.Balance // Assuming Balance is a property in CashWallet
                 };
                 return Ok(profileWithKyc);
             }
 
-            return NotFound("User or KYC data not found.");
+            return NotFound("User, KYC data, or CashWallet not found.");
         }
+
     }
 }

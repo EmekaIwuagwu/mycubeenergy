@@ -27,6 +27,7 @@ namespace CubeEnergy.Repositories
         Task<(decimal CashWalletBalance, decimal UserUnitBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId);
         Task InsertCashWalletAndTransactionAsync(string email, decimal amount, string accountId, string transactionType);
         Task<UserDetailDTO> GetUserDetailsByEmailAsync(string email);
+        Task<CashWallet> GetByEmailAsync(string email);
     }
 
 }
