@@ -155,5 +155,17 @@ namespace CubeEnergy.Controllers
             // Return a success response
             return Ok(new { Message = "Payment returned successfully" });
         }
+
+        [HttpGet("dashboard/summary")]
+        [Authorize]
+        public async Task<IActionResult> GetDashboardSummary()
+        {
+            var (totalUsers, totalTransactionAmount) = await _adminService.GetTransactionsAndTotalUsers();
+            return Ok(new
+            {
+                totalUsers,
+                totalTransactionAmount
+            });
+        }
     }
 }

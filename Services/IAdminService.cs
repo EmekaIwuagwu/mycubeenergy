@@ -19,7 +19,7 @@ namespace CubeEnergy.Services
         Task<UnitPrice> SaveUnitPriceAsync(UnitPriceDTO priceDto);
         Task<UnitPrice> UpdateUnitPriceAsync(UnitPriceDTO priceDto);
         Task DeleteUnitPriceAsync(int id);
-        
+        Task<(int TotalUsers, decimal TotalTransactionAmount)> GetTransactionsAndTotalUsers();
         Task ReturnPaymentAsync(string debitAccountId, string creditAccountId, decimal amount);
     }
 }

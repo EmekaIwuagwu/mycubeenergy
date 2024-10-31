@@ -135,6 +135,12 @@ namespace CubeEnergy.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<(int TotalUsers, decimal TotalTransactionAmount)> GetTransactionsAndTotalUsers()
+        {
+            int totalUsers = await _context.Users.CountAsync();
+            decimal totalTransactionAmount = await _context.Transactions.SumAsync(t => t.Amount);
 
+            return (totalUsers, totalTransactionAmount);
+        }
     }
 }
