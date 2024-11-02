@@ -29,9 +29,12 @@ namespace CubeEnergy.Repositories
             return await _context.Transactions.Where(t => t.Email == email).ToListAsync();
         }
 
-        public Task LogTransactionAsync(Transaction transaction)
+        public async Task LogTransactionAsync(Transaction transaction) // Change return type to Task
         {
-            throw new NotImplementedException();
+            // Add the transaction to the context
+            await _context.Transactions.AddAsync(transaction);
+            // Save changes to the database
+            await _context.SaveChangesAsync();
         }
     }
 }
