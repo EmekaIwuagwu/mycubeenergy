@@ -86,6 +86,7 @@ namespace CubeEnergy.Repositories
                 // Update CashWallet
                 var cashWallet = new CashWallet
                 {
+                    AccountId = accountId,
                     Email = email,
                     Balance = transactionType == "Credit" ? user.UnitBalance + amount : user.UnitBalance - amount,
                     CreatedAt = DateTime.UtcNow
