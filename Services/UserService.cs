@@ -48,9 +48,9 @@ namespace CubeEnergy.Services
             return await _userRepository.GetUnitPriceAsync(); // Add method if required
         }
 
-        public async Task UpdateBalanceAndLogTransactionAsync(string email, decimal amount, string accountId, string transactionType)
+        public async Task UpdateBalanceAndLogTransactionAsync(string email, decimal amount, string accountId, string transactionType, string payerName, string packageType, int days, string paymentMethod)
         {
-            await _userRepository.UpdateCashWalletAsync(email, amount, accountId, transactionType);
+            await _userRepository.UpdateCashWalletAsync(email, amount, accountId, transactionType,payerName,packageType,days,paymentMethod);
 
             var transaction = new Transaction
             {
@@ -89,9 +89,9 @@ namespace CubeEnergy.Services
             return await _userRepository.GetUsageLimitsByMonthAsync(email, startDate, endDate);
         }
 
-        public async Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType)
+        public async Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType, string payerName, string packageType, int days, string paymentMethod)
         {
-            await _userRepository.UpdateCashWalletAsync(email, amount, accountId, transactionType);
+            await _userRepository.UpdateCashWalletAsync(email, amount, accountId, transactionType,payerName,packageType,days,paymentMethod);
         }
 
         public async Task<(decimal CashWalletBalance, decimal UserWalletBalance)> DebitCashWalletAndCreditUserAsync(string email, decimal amount, string accountId)
@@ -123,7 +123,5 @@ namespace CubeEnergy.Services
         {
             return await _userRepository.GetByEmailAsync(email);
         }
-
     }
-
 }

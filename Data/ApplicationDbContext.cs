@@ -20,5 +20,6 @@ namespace CubeEnergy.Data
         public DbSet<NewsletterSubscription> NewsletterSubscriptions { get; set; }
         public DbSet<Admin> Admins { get; set; } // Added DbSet for Admins
         public DbSet<CashWallet> CashWallets { get; set; }
+        public DbSet<Order> Orders { get; set; }
     }
 }

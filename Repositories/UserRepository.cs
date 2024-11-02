@@ -78,12 +78,12 @@ namespace CubeEnergy.Repositories
         }
         */
 
-        public async Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType)
+        public async Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType, string payerName, string packageType, int days, string paymentMethod)
         {
             var user = await GetUserByEmailAsync(email);
             if (user != null)
             {
-                // Insert record into CashWallets table
+                // Update CashWallet
                 var cashWallet = new CashWallet
                 {
                     Email = email,
@@ -93,7 +93,7 @@ namespace CubeEnergy.Repositories
 
                 await _context.CashWallets.AddAsync(cashWallet);
 
-                // Save the transaction details into the Transactions table
+                // Log the transaction in the Transactions table
                 var transaction = new Transaction
                 {
                     Email = email,
@@ -106,10 +106,25 @@ namespace CubeEnergy.Repositories
 
                 await _context.Transactions.AddAsync(transaction);
 
-                // Save changes to both tables
+                // Create a new order record in the Orders table
+                var order = new Order
+                {
+                    Amount = amount,
+                    PayerName = payerName,
+                    Date = DateTime.UtcNow,
+                    PackageType = packageType,
+                    Days = days,
+                    PaymentMethod = paymentMethod,
+                    Total = amount // Assuming 'Total' matches 'Amount' in this case
+                };
+
+                await _context.Orders.AddAsync(order);
+
+                // Save changes to all tables
                 await _context.SaveChangesAsync();
             }
         }
+
 
         public async Task<IEnumerable<Transaction>> GetTransactionsByEmailAsync(string email)
         {
@@ -356,7 +371,5 @@ namespace CubeEnergy.Repositories
 
             return monthlyTotals;
         }
-
     }
-    
 }

@@ -18,7 +18,7 @@ namespace CubeEnergy.Repositories
         Task UpdateUserAsync(User user);
         Task<UnitPrice> GetUnitPriceAsync(int id);
         Task<UnitPrice> GetUnitPriceAsync(); // Add if needed
-        Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType);
+        Task UpdateCashWalletAsync(string email, decimal amount, string accountId, string transactionType, string payerName, string packageType, int days, string paymentMethod);
         Task<IEnumerable<Transaction>> GetTransactionsByEmailAsync(string email);
         Task<IEnumerable<Transaction>> GetTransactionsByDateAsync(string email, DateTime from, DateTime to);
         Task<Result> ShareUnitsAsync(string originAccountId, string destinationAccountId, decimal amount);
