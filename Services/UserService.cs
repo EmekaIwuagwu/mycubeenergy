@@ -48,20 +48,67 @@ namespace CubeEnergy.Services
             return await _userRepository.GetUnitPriceAsync(); // Add method if required
         }
 
-        public async Task UpdateBalanceAndLogTransactionAsync(string email, decimal amount, string accountId, string transactionType, string payerName, string packageType, int days, string paymentMethod)
+        public async Task UpdateBalanceAndLogTransactionAsync(
+            string email,
+            decimal amount,
+            string accountId,
+            string transactionType,
+            string payerName,
+            string packageType,
+            int days,
+            string paymentMethod)
         {
-            await _userRepository.UpdateCashWalletAsync(email, amount, accountId, transactionType,payerName,packageType,days,paymentMethod);
+            // Fetch user to ensure the user exists
+            var user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null)
+            {
+                throw new ArgumentException("User not found.");
+            }
 
+            // Define the new balance based on transaction type
+            decimal newBalance;
+
+            if (transactionType == "Credit")
+            {
+                newBalance = user.UnitBalance + amount;  // Increase user's balance
+            }
+            else if (transactionType == "Debit")
+            {
+                if (user.UnitBalance < amount) // Check for sufficient balance
+                {
+                    throw new InvalidOperationException("Insufficient balance to complete the debit transaction.");
+                }
+                newBalance = user.UnitBalance - amount;  // Decrease user's balance
+            }
+            else
+            {
+                throw new ArgumentException("Invalid transaction type. Must be 'Credit' or 'Debit'.");
+            }
+
+            // Prepare the transaction object
             var transaction = new Transaction
             {
                 Email = email,
                 Amount = amount,
                 TransactionType = transactionType,
+                AccountId = accountId,
+                Description = transactionType == "Credit"
+                    ? $"Credited {amount:C} to {email}."
+                    : $"Debited {amount:C} from {email}.",
                 CreatedAt = DateTime.UtcNow
             };
 
+            // Update the cash wallet and log the transaction
+            await _userRepository.UpdateCashWalletAsync(email, amount, accountId, transactionType, payerName, packageType, days, paymentMethod);
+
+            // Log the transaction
             await _transactionRepository.LogTransactionAsync(transaction);
+
+            // Update the user's unit balance
+            user.UnitBalance = newBalance; // Update the user's balance
+            await _userRepository.UpdateUserAsync(user); // Ensure to save the user changes
         }
+
 
         public async Task<IEnumerable<Transaction>> GetTransactionsByEmailAsync(string email)
         {
