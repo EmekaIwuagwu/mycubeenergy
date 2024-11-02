@@ -21,5 +21,7 @@ namespace CubeEnergy.Services
         Task DeleteUnitPriceAsync(int id);
         Task<(int TotalUsers, decimal TotalTransactionAmount)> GetTransactionsAndTotalUsers();
         Task ReturnPaymentAsync(string debitAccountId, string creditAccountId, decimal amount);
+        Task<IEnumerable<Order>> GetAllOrdersAsync();
+        Task<Order> GetOrderByReferenceNumberAsync(string referenceNumber);
     }
 }

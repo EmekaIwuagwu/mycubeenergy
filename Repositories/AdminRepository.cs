@@ -142,5 +142,18 @@ namespace CubeEnergy.Repositories
 
             return (totalUsers, totalTransactionAmount);
         }
+
+        public async Task<IEnumerable<Order>> GetAllOrdersAsync()
+        {
+            return await _context.Orders
+                .OrderByDescending(o => o.Date) // Order by newest first
+                .ToListAsync();
+        }
+
+        public async Task<Order> GetOrderByReferenceNumberAsync(string referenceNumber)
+        {
+            return await _context.Orders
+                .FirstOrDefaultAsync(o => o.ReferenceNumber == referenceNumber);
+        }
     }
 }

@@ -17,5 +17,8 @@ namespace CubeEnergy.Repositories
         Task DeleteUserAsync(string accountId);
         Task<(int TotalUsers, decimal TotalTransactionAmount)> GetTransactionsAndTotalUsers();
         Task<IEnumerable<Transaction>> GetTransactionsByEmailOrAccountIdAsync(string emailOrAccountId);
+        Task<IEnumerable<Order>> GetAllOrdersAsync();
+        Task<Order> GetOrderByReferenceNumberAsync(string referenceNumber);
+
     }
 }

@@ -167,5 +167,24 @@ namespace CubeEnergy.Controllers
                 totalTransactionAmount
             });
         }
+
+        [HttpGet("orders")]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            var orders = await _adminService.GetAllOrdersAsync();
+            return Ok(orders);
+        }
+
+        [HttpGet("orders/{referenceNumber}")]
+        public async Task<IActionResult> GetOrderByReferenceNumber(string referenceNumber)
+        {
+            var order = await _adminService.GetOrderByReferenceNumberAsync(referenceNumber);
+            if (order == null)
+            {
+                return NotFound($"Order with reference number {referenceNumber} not found.");
+            }
+
+            return Ok(order);
+        }
     }
 }
