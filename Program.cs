@@ -152,7 +152,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "CubeEnergy API v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyCubeEnergy API v1");
 });
 
 // Use CORS
